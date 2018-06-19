@@ -1,11 +1,11 @@
 package nl.workshop1.controller;
 
 import nl.workshop1.model.Role;
-import nl.workshop1.view.HoofdMenu;
-import nl.workshop1.view.AccountMenu;
-import nl.workshop1.view.AfsluitMenu;
-import nl.workshop1.view.KlantMenu;
-import nl.workshop1.view.ProductMenu;
+import nl.workshop1.menu.HoofdMenu;
+import nl.workshop1.menu.AccountMenu;
+import nl.workshop1.menu.AfsluitMenu;
+import nl.workshop1.menu.KlantMenu;
+import nl.workshop1.menu.ProductMenu;
 import nl.workshop1.view.AfsluitView;
 
 /**

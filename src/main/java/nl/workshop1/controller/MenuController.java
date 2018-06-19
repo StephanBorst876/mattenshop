@@ -10,7 +10,11 @@ public abstract class MenuController {
     // Default will be admin
     public static final int CONTROLER_MODE_ADMIN = 1;
     public static final int CONTROLLER_MODE_SEARCH = 2;
-    
+   
+    // Een controller kan een Entity Nieuw aanmaken of Wijzigen
+    public static final int MODE_NIEUW = 1;
+    public static final int MODE_WIJZIG = 2;
+
     public abstract void buildOptionsMenu();
 
     public abstract void handleMenu();

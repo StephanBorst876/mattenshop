@@ -1,4 +1,4 @@
-package nl.workshop1.view;
+package nl.workshop1.menu;
 
 import java.util.ArrayList;
 import nl.workshop1.view.MenuView;
@@ -28,9 +28,6 @@ Maak uw keuze :
  */
 public class Menu {
 
-    public static final int MODE_NEW = 1;
-    public static final int MODE_CHANGE = 2;
-
     private static final int NUMBER_RECORDS_TO_DISPLAY = 5;
 
     // For input purposes (i.e. input.nextLine(), use MenuView()
@@ -40,7 +37,7 @@ public class Menu {
     private String title;
     private static String loginName = "";
 
-    // Eventuele records (account/artikel/klant) die worden getoond
+    // Eventuele records (account/artikel/klant etc) die worden getoond
     private boolean recordSelected = false;
     private ArrayList<String> recordList = null;
     private int recordSelectedIndex = -1;
@@ -64,6 +61,14 @@ public class Menu {
         subMenu = new ArrayList<>();
         switchValue = new ArrayList<>();
         recordList = new ArrayList<>();
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
     public void setLoginName(String name) {
@@ -135,7 +140,7 @@ public class Menu {
 
     /**
      * Draw header and submenu-itens on the console. The option "0. terug" is
-     * added depending on autoAddZeroOption
+     * added depending on addReturnOption
      */
     public void drawMenu() {
 
@@ -152,12 +157,12 @@ public class Menu {
             menuView.showMessage();
         } else {
             for (int i = 0; i < recordList.size(); i++) {
-                if (i==0) {
+                if (i == 0) {
                     // First display the header
                     menuView.showRecordHeader(recordHeader);
                 }
                 if (i < NUMBER_RECORDS_TO_DISPLAY) {
-                    menuView.showMessage(displayChoice('A', i) + recordList.get(i));
+                    menuView.showMessage(generateChoice('A', i) + recordList.get(i));
                 } else {
                     int remainingRecords = recordList.size() - NUMBER_RECORDS_TO_DISPLAY;
                     if (remainingRecords > 0) {
@@ -175,14 +180,14 @@ public class Menu {
 
         // Show all submenu
         for (int i = 0; i < subMenu.size(); i++) {
-            menuView.showMessage(displayChoice('1', i) + subMenu.get(i));
+            menuView.showMessage(generateChoice('1', i) + subMenu.get(i));
         }
         if (addReturnOption) {
-            menuView.showMessage(displayChoice('0', 0) + "Terug");
+            menuView.showMessage(generateChoice('0', 0) + "Terug");
         }
     }
 
-    protected String displayChoice(char offset, int index) {
+    protected String generateChoice(char offset, int index) {
         StringBuilder s = new StringBuilder();
         s.append("  ");
         s.append((char) (offset + index));
@@ -193,7 +198,7 @@ public class Menu {
     /**
      * Keeps asking the user for entering a key, until a valid key is pressed.
      *
-     * @return : the selected key as a char
+     * @return : the selected key as a String
      */
     public String userChoice() {
 
@@ -221,6 +226,7 @@ public class Menu {
             }
             return null;
         }
+
         if (addReturnOption) {
             if (choice.charAt(0) == '0') {
                 return "0";
@@ -255,15 +261,7 @@ public class Menu {
         }
     }
 
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    private String displayTextForFilter() {
+    protected String displayTextForFilter() {
         if (!filter.equals("")) {
             StringBuilder s = new StringBuilder();
             s.append(" <").append(filter).append(">");

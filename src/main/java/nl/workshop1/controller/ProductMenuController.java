@@ -1,6 +1,6 @@
 package nl.workshop1.controller;
 
-import nl.workshop1.view.ProductMenu;
+import nl.workshop1.menu.ProductMenu;
 
 /**
  *

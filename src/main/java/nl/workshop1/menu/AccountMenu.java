@@ -1,4 +1,4 @@
-package nl.workshop1.view;
+package nl.workshop1.menu;
 
 import nl.workshop1.model.Account;
 

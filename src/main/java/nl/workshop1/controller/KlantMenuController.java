@@ -1,10 +1,9 @@
 package nl.workshop1.controller;
 
 import java.util.ArrayList;
-import nl.workshop1.view.KlantMenu;
+import nl.workshop1.menu.KlantMenu;
 import nl.workshop1.model.Klant;
-import nl.workshop1.view.KlantChangeMenu;
-import nl.workshop1.view.Menu;
+import nl.workshop1.menu.KlantChangeMenu;
 import nl.workshop1.view.KlantChangeMenuView;
 
 /**
@@ -59,7 +58,7 @@ public class KlantMenuController extends MenuController {
                     // NEW
                     klantChangeMenu = new KlantChangeMenu("Klant toevoegen", new Klant());
                     klantChangeMenuView = new KlantChangeMenuView();
-                    KlantChangeMenuController klantNew = new KlantChangeMenuController(Menu.MODE_NEW, klantChangeMenu, klantChangeMenuView);
+                    KlantChangeMenuController klantNew = new KlantChangeMenuController(MODE_NIEUW, klantChangeMenu, klantChangeMenuView);
                     klantNew.runController();
                     klantMenu.setRecordSelected(false);
                     break;
@@ -72,7 +71,7 @@ public class KlantMenuController extends MenuController {
                     // Wijzig
                     klantChangeMenu = new KlantChangeMenu("Klant wijzigen", klantList.get(klantMenu.getRecordSelectedIndex()));
                     klantChangeMenuView = new KlantChangeMenuView();
-                    KlantChangeMenuController klantChange = new KlantChangeMenuController(Menu.MODE_CHANGE, klantChangeMenu, klantChangeMenuView);
+                    KlantChangeMenuController klantChange = new KlantChangeMenuController(MODE_WIJZIG, klantChangeMenu, klantChangeMenuView);
                     klantChange.runController();
                     klantMenu.setRecordSelected(false);
                     break;

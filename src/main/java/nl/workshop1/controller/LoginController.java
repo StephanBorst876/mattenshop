@@ -1,7 +1,7 @@
 package nl.workshop1.controller;
 
 import nl.workshop1.model.Account;
-import nl.workshop1.view.LoginMenu;
+import nl.workshop1.menu.LoginMenu;
 import nl.workshop1.utility.Validator;
 import nl.workshop1.view.LoginView;
 

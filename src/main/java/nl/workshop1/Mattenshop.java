@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import nl.workshop1.controller.LoginController;
 import nl.workshop1.controller.HoofdMenuController;
-import nl.workshop1.view.HoofdMenu;
-import nl.workshop1.view.LoginMenu;
+import nl.workshop1.menu.HoofdMenu;
+import nl.workshop1.menu.LoginMenu;
 import nl.workshop1.utility.Slf4j;
 import nl.workshop1.view.LoginView;
 

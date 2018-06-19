@@ -1,7 +1,6 @@
 package nl.workshop1.controller;
 
-import nl.workshop1.view.AccountChangeMenu;
-import nl.workshop1.view.Menu;
+import nl.workshop1.menu.AccountChangeMenu;
 import nl.workshop1.view.AccountChangeMenuView;
 
 /**
@@ -23,7 +22,7 @@ public class AccountChangeMenuController extends MenuController {
     @Override
     public void buildOptionsMenu() {
         accountChangeMenu.clearSubMenu();
-        if (accountMode == Menu.MODE_NEW) {
+        if (accountMode == MODE_NIEUW) {
             // New account may change the userName
             accountChangeMenu.addSubMenu(formatText("Username") + accountChangeMenu.getAccount().getUserName(), "1");
         } else {
@@ -38,7 +37,7 @@ public class AccountChangeMenuController extends MenuController {
     @Override
     public void handleMenu() {
         // Initially ask for input all datafields
-        if (accountMode == Menu.MODE_NEW) {
+        if (accountMode == MODE_NIEUW) {
             accountChangeMenu.getAccount().setUserName(accountChangeMenuView.getInputUsername());
             accountChangeMenu.getAccount().setWachtwoord(accountChangeMenuView.getInputWachtwoord());
             accountChangeMenu.getAccount().setRole(accountChangeMenuView.getInputRole());
@@ -59,7 +58,7 @@ public class AccountChangeMenuController extends MenuController {
                     accountChangeMenu.getAccount().setRole(accountChangeMenuView.getInputRole());
                     break;
                 case "4":
-                    if (accountMode == Menu.MODE_NEW) {
+                    if (accountMode == MODE_NIEUW) {
                         AccountDAOController.insertAccount(accountChangeMenu.getAccount());
                     } else {
                         AccountDAOController.updateAccount(accountChangeMenu.getAccount());

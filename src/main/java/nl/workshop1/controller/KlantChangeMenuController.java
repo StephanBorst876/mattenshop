@@ -3,9 +3,8 @@ package nl.workshop1.controller;
 import java.util.ArrayList;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
-import nl.workshop1.view.AdresChangeMenu;
-import nl.workshop1.view.KlantChangeMenu;
-import nl.workshop1.view.Menu;
+import nl.workshop1.menu.AdresChangeMenu;
+import nl.workshop1.menu.KlantChangeMenu;
 import nl.workshop1.model.Klant;
 import nl.workshop1.view.AdresChangeMenuView;
 import nl.workshop1.view.KlantChangeMenuView;
@@ -34,7 +33,7 @@ public class KlantChangeMenuController extends MenuController {
     @Override
     public void buildOptionsMenu() {
         klantChangeMenu.clearSubMenu();
-        if (klantMode == Menu.MODE_NEW) {
+        if (klantMode == MODE_NIEUW) {
             // New account may change the userName
             klantChangeMenu.addSubMenu(formatText("Email") + klantChangeMenu.getKlant().getEmail(), "1");
         } else {
@@ -54,7 +53,7 @@ public class KlantChangeMenuController extends MenuController {
     @Override
     public void handleMenu() {
         // Initially ask for input all datafields
-        if (klantMode == Menu.MODE_NEW) {
+        if (klantMode == MODE_NIEUW) {
             klantChangeMenu.getKlant().setEmail(klantChangeMenuView.getInputUsername());
             klantChangeMenu.getKlant().setVoornaam(klantChangeMenuView.getInputVoornaam());
             klantChangeMenu.getKlant().setTussenvoegsel(klantChangeMenuView.getInputTussenvoegsel());
@@ -108,7 +107,7 @@ public class KlantChangeMenuController extends MenuController {
                     break;
                 case "9":
                     Klant klant = klantChangeMenu.getKlant();
-                    if (klantMode == Menu.MODE_NEW) {
+                    if (klantMode == MODE_NIEUW) {
                         KlantDAOController.insertKlant(klant);
                         for (int i = 0; i < klant.getAdresList().size(); i++) {
                             Adres adres = klant.getAdresList().get(i);

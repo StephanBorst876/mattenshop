@@ -1,6 +1,4 @@
-package nl.workshop1.view;
-
-import nl.workshop1.view.Menu;
+package nl.workshop1.menu;
 
 /**
  *

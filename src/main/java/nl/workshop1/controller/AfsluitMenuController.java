@@ -1,6 +1,6 @@
 package nl.workshop1.controller;
 
-import nl.workshop1.view.AfsluitMenu;
+import nl.workshop1.menu.AfsluitMenu;
 import nl.workshop1.utility.Slf4j;
 import nl.workshop1.view.AfsluitView;
 

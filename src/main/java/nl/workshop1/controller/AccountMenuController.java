@@ -2,9 +2,8 @@ package nl.workshop1.controller;
 
 import java.util.ArrayList;
 import nl.workshop1.model.Account;
-import nl.workshop1.view.AccountChangeMenu;
-import nl.workshop1.view.AccountMenu;
-import nl.workshop1.view.Menu;
+import nl.workshop1.menu.AccountChangeMenu;
+import nl.workshop1.menu.AccountMenu;
 import nl.workshop1.view.AccountChangeMenuView;
 
 /**
@@ -46,7 +45,7 @@ public class AccountMenuController extends MenuController {
                     // NEW
                     accountChangeMenu = new AccountChangeMenu("Account toevoegen", new Account());
                     accountChangeMenuView = new AccountChangeMenuView();
-                    AccountChangeMenuController accountNew = new AccountChangeMenuController(Menu.MODE_NEW, accountChangeMenu, accountChangeMenuView);
+                    AccountChangeMenuController accountNew = new AccountChangeMenuController(MODE_NIEUW, accountChangeMenu, accountChangeMenuView);
                     accountNew.runController();
                     accountMenu.setRecordSelected(false);
                     break;
@@ -59,7 +58,7 @@ public class AccountMenuController extends MenuController {
                     // Wijzig
                     accountChangeMenu = new AccountChangeMenu("Account wijzigen", accountList.get(accountMenu.getRecordSelectedIndex()));
                     accountChangeMenuView = new AccountChangeMenuView();
-                    AccountChangeMenuController accountChange = new AccountChangeMenuController(Menu.MODE_CHANGE, accountChangeMenu, accountChangeMenuView);
+                    AccountChangeMenuController accountChange = new AccountChangeMenuController(MODE_WIJZIG, accountChangeMenu, accountChangeMenuView);
                     accountChange.runController();
                     accountMenu.setRecordSelected(false);
                     break;

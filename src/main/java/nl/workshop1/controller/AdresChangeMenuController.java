@@ -3,7 +3,7 @@ package nl.workshop1.controller;
 import java.util.ArrayList;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
-import nl.workshop1.view.AdresChangeMenu;
+import nl.workshop1.menu.AdresChangeMenu;
 import nl.workshop1.view.AdresChangeMenuView;
 
 /**
