@@ -1,6 +1,7 @@
 package com.vogella.junit.first;
 
 import nl.workshop1.DAO.AccountDAOImplTest;
+import nl.workshop1.DAO.ArtikelDAOImplTest;
 import org.junit.Test;
 
 /**
@@ -12,9 +13,11 @@ public class MyMenuTest {
     @Test
     public void main(){
         
-        AccountDAOImplTest accTest = new AccountDAOImplTest();
-        accTest.testReadAccountByUserName();
+        AccountDAOImplTest accountTest = new AccountDAOImplTest();
+        accountTest.testReadAccountByUserName();
         
+        ArtikelDAOImplTest artikeltest = new ArtikelDAOImplTest();
+        artikeltest.testInsertArtikel();
     }
     
 }

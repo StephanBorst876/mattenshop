@@ -1,18 +1,23 @@
 - Database model even bespreken.
 
-- map methode voor DAO ?
+- map methode voor DAO?
+Dat heb je eerder geadviseerd, maar kan ik niet plaatsen.
 
-- Insert Klant en hoe dan insert adres?
+- DAO's: Bestelling en BestelRegel nog doen.
+Moet ik al doende zicht op krijgen.
+ArtikelDAO zal nog een select/search moeten krijgen.
+
+- Insert Klant en hoe dan insert adres, gelet op het klant.id (auto-increment)?
 Binnen de DAO klant of in eigen adres DAO?
 
 - POJO: klant vs. adres
 In POJO adres een klant-object OF:
-in POJO klant een ArrayList van adres ?
+in POJO klant een ArrayList van Adres ?
 
-- Enum classes voor accountType, adresType en bestelStatus gemaakt.
-In hoeverre zijn deze classes correct gebruikt, met name bij het handelen
+- Enum classes voor accountType (=Role.java), adresType en bestelStatus gemaakt.
+In hoeverre zijn deze classes correct gebruikt, met name bij het communiceren
 van en naar DB?
-Zie o.a. method:   AccountDAOImple:selectAccount()
+Zie o.a. method:   AccountDAOImpl:selectAccount()
 account.setRole(resultSet.getString("account_type"));
 
 Er is vast een nettere manier om een Role-object te creeren vanuit de
@@ -20,5 +25,5 @@ String (char) die uit de Database wordt gelezen.
 Idem bij naar de DB schrijven: pstmtObj.setString(3, account.getRole().getDescription().substring(0, 1));
 vind ik niet fraai!
 
-- Mockito?
+- Mockito? Moet ik nog verder induiken.
 
