@@ -1,8 +1,11 @@
 package nl.workshop1.DAO;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import nl.workshop1.model.Artikel;
 import nl.workshop1.utility.Slf4j;
 
@@ -24,6 +27,11 @@ public class ArtikelDAOImpl implements ArtikelDAO {
     private final String ARTIKEL_UPDATE = "update artikel "
             + "set naam=?,prijs=?,voorraad=?,gereserveerd=?,sortering=? "
             + "where id = ?";
+
+    private final String ARTIKEL_LIKE
+            = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
+            + "WHERE naam like ? AND aktief <> 0 "
+            + "ORDER BY sortering";
 
     @Override
     public void deleteArtikel(int id) {
@@ -48,7 +56,6 @@ public class ArtikelDAOImpl implements ArtikelDAO {
     public int insertArtikel(Artikel artikel) {
         Slf4j.getLogger().info("insertArtikel({})", artikel.getNaam());
 
-        
         try {
 
             Connection connObj = DbConnection.getConnection();
@@ -72,13 +79,13 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             Slf4j.getLogger().info("insertArtikel({}) ended", newArtikelId);
 
             return newArtikelId;
-            
+
         } catch (Exception sqlException) {
             Slf4j.getLogger().error("SQL exception occurred ", sqlException);
         }
-        
+
         return 0;
-        
+
     }
 
     @Override
@@ -106,6 +113,48 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             Slf4j.getLogger().error("SQL exception occurred ", sqlException);
         }
 
+    }
+
+    protected ArrayList<Artikel> selectArtikel(String query, String userName) {
+
+        Slf4j.getLogger().info(query + " " + userName);
+
+        ArrayList<Artikel> artikelList = new ArrayList<>();
+
+        try {
+
+            Connection connObj = DbConnection.getConnection();
+            PreparedStatement pstmtObj = connObj.prepareStatement(query);
+
+            pstmtObj.setString(1, userName);
+            try (ResultSet resultSet = pstmtObj.executeQuery()) {
+                while (resultSet.next()) {
+                    Artikel artikel = new Artikel();
+                    artikel.setId(resultSet.getInt("id"));
+                    artikel.setNaam(resultSet.getString("naam"));
+
+                    BigDecimal value = new BigDecimal(resultSet.getFloat("prijs"));
+                    artikel.setPrijs(value.setScale(2, RoundingMode.HALF_UP));
+
+                    artikel.setVoorraad(resultSet.getInt("voorraad"));
+                    artikel.setGereserveerd(resultSet.getInt("gereserveerd"));
+                    artikel.setSortering(resultSet.getInt("sortering"));
+
+                    artikelList.add(artikel);
+                }
+            }
+
+        } catch (Exception sqlException) {
+            Slf4j.getLogger().error("SQL exception occurred", sqlException);
+        }
+        return artikelList;
+
+    }
+
+    @Override
+    public ArrayList<Artikel> readArtikelWithFilter(String filter) {
+        ArrayList<Artikel> accountList = selectArtikel(ARTIKEL_LIKE, "%" + filter + "%");
+        return accountList;
     }
 
 }

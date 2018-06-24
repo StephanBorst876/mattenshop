@@ -1,12 +1,13 @@
 package nl.workshop1.model;
 
 import java.math.BigDecimal;
+import nl.workshop1.utility.Slf4j;
 
 /**
  *
  * @author FeniksBV
  */
-public class Artikel {
+public class Artikel implements Cloneable{
   private int id = 0;
   private String naam = "";
   private BigDecimal prijs = new BigDecimal(0);
@@ -113,5 +114,14 @@ public class Artikel {
         this.aktief = aktief;
     }
   
+    @Override
+    public Object clone() {
+        try {
+            return (Artikel) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Slf4j.getLogger().error("Cloning Artikel exception", ex);
+        }
+        return null;
+    }
   
 }

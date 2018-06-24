@@ -1,7 +1,8 @@
 package nl.workshop1.utility;
 
-import nl.workshop1.controller.AccountDAOController;
+import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.model.Account;
+import nl.workshop1.model.Role;
 import org.apache.commons.validator.routines.EmailValidator;
 
 /**
@@ -13,13 +14,14 @@ public class Validator {
     public static boolean validLoginAccount(Account loginAccount) {
 
         Slf4j.getLogger().info("validLoginAccount({})", loginAccount.getUserName());
-        
-        Account account = AccountDAOController.readAccountByUserName(loginAccount.getUserName());
+
+        Account account = DAOFactory.getAccountDAO().readAccountByUserName(loginAccount.getUserName());
 
         if (account != null) {
             if (account.getWachtwoord() != null) {
                 if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {
                     loginAccount.setRole(account.getRole());
+                    loginAccount.setKlantId(account.getKlantId());
                     return true;
                 }
             }
@@ -43,6 +45,16 @@ public class Validator {
         } else {
             return false;
         }
+    }
 
+    public static boolean validAccount(Account account) {
+        // Alle data velden zijn gevalideerd bij input.
+        // Controleer of voor role=Klant ook een klant is gespecificeerd
+        if (account.getRole().equals(Role.ROLE_KLANT)) {
+            if (account.getKlant() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

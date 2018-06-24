@@ -1,17 +1,18 @@
 package nl.workshop1.model;
 
 import java.util.ArrayList;
+import nl.workshop1.utility.Slf4j;
 
 /**
  *
  * @author FeniksBV
  */
-public class Klant {
+public class Klant implements Cloneable{
 
     private int id = 0;
     private String email = "";
     private String voornaam = "";
-    private String achternaam = "'";
+    private String achternaam = "";
     private String tussenvoegsel = "";
     private ArrayList<Adres> adresList = new ArrayList<>();
     private int sortering = 0;
@@ -111,20 +112,21 @@ public class Klant {
         return s.toString();
     }
 
-    public void addAdresList(Adres adres) {
-        adresList.add(adres);
-    }
-
-    public Adres getAdres(AdresType adresType) {
-        for (int i = 0; i < adresList.size(); i++) {
-            if (adresList.get(i).getAdresType().equals(adresType)) {
-                return adresList.get(i);
-            }
-        }
-        return null;
+    public void setAdresList(ArrayList<Adres> adresList) {
+        this.adresList = adresList;
     }
     
     public ArrayList<Adres> getAdresList() {
         return adresList;
+    }
+    
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Slf4j.getLogger().error("Cloning Klant exception", ex);
+        }
+        return null;
     }
 }

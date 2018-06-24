@@ -50,7 +50,6 @@ public class AccountDAOImplTest {
      */
     @Test
     public void testReadAccountByUserName() {
-        System.out.println("readAccountByUserName");
         String userName = "stephan@borst.nl";
         AccountDAOImpl instance = new AccountDAOImpl();
         Account result = instance.readAccountByUserName(userName);
@@ -65,7 +64,6 @@ public class AccountDAOImplTest {
      */
     @Test
     public void testReadAccountWithFilter() {
-        System.out.println("readAccountWithFilter");
         String filter = "stephan@borst";
         AccountDAOImpl instance = new AccountDAOImpl();
         ArrayList<Account> result = instance.readAccountWithFilter(filter);
@@ -83,7 +81,6 @@ public class AccountDAOImplTest {
      */
     @Test
     public void testDeleteAccount() {
-        System.out.println("deleteAccount");
         String userName = "stephan@borst.nl";
         AccountDAOImpl instance = new AccountDAOImpl();
         instance.deleteAccount(userName);
@@ -94,7 +91,6 @@ public class AccountDAOImplTest {
      */
     @Test
     public void testInsertAccount() {
-        System.out.println("insertAccount");
         Account account = new Account("a", "a");
         account.setRole(Role.ROLE_KLANT);
         AccountDAOImpl instance = new AccountDAOImpl();
@@ -106,7 +102,6 @@ public class AccountDAOImplTest {
      */
     @Test
     public void testUpdateAccount() {
-         System.out.println("updateAccount");
         Account account = new Account("a", "aaaa");
         account.setRole(Role.ROLE_MEDEWERKER);
         AccountDAOImpl instance = new AccountDAOImpl();

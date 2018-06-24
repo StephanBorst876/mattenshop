@@ -10,7 +10,6 @@ public enum AdresType {
     // Postadres is verplicht
     // Factuuradres kan Postadres overrulen
     // Bezorgadres kan Postadres overrulen
-    //
     
     private String description;
 

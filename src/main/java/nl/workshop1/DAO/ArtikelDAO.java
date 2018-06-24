@@ -1,5 +1,6 @@
 package nl.workshop1.DAO;
 
+import java.util.ArrayList;
 import nl.workshop1.model.Artikel;
 
 /**
@@ -13,4 +14,6 @@ public interface ArtikelDAO {
     public int insertArtikel(Artikel artikel);
 
     public void updateArtikel(Artikel artikel);
+
+    public ArrayList<Artikel> readArtikelWithFilter(String filter);
 }

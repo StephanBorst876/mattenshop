@@ -1,6 +1,7 @@
 package nl.workshop1.model;
 
 import java.util.Objects;
+import nl.workshop1.utility.Slf4j;
 
 /**
  *
@@ -11,9 +12,11 @@ public class Account implements Cloneable {
     private String userName;
     private String wachtwoord;
     private Role role;
+    private int klantId;
+    private Klant klant = null;
 
     public Account() {
-        this("","");
+        this("", "");
     }
 
     public Account(String userName, String wachtwoord) {
@@ -38,6 +41,28 @@ public class Account implements Cloneable {
         this.wachtwoord = wachtwoord;
     }
 
+    /**
+     * @return the klantId
+     */
+    public int getKlantId() {
+        return klantId;
+    }
+
+    /**
+     * @param klantId the klantId to set
+     */
+    public void setKlantId(int klantId) {
+        this.klantId = klantId;
+    }
+
+    public Klant getKlant() {
+        return klant;
+    }
+
+    public void setKlant(Klant klant) {
+        this.klant = klant;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -46,21 +71,14 @@ public class Account implements Cloneable {
         this.role = role;
     }
 
-    public void setRole(String role) {
-        Role newRole = Role.getRole(role);
-        if (newRole != null) {
-            this.role = newRole;
-        }
-    }
-
-    public String getRoleDescription() {
-        return role.getDescription();
-    }
-
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        Account accountClone = (Account) super.clone();
-        return accountClone;
+    public Object clone() {
+        try {
+            return (Account) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Slf4j.getLogger().error("Cloning Account exception", ex);
+        }
+        return null;
     }
 
     @Override
@@ -95,4 +113,5 @@ public class Account implements Cloneable {
         }
         return true;
     }
+
 }

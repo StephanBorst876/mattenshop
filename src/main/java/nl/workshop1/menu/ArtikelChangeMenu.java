@@ -4,9 +4,9 @@ package nl.workshop1.menu;
  *
  * @author FeniksBV
  */
-public class KlantChangeMenu extends Menu {
+public class ArtikelChangeMenu extends Menu {
 
-    public KlantChangeMenu(String title) {
+    public ArtikelChangeMenu(String title) {
         super(title);
     }
 

@@ -3,8 +3,10 @@ package nl.workshop1.DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 import java.util.ArrayList;
 import nl.workshop1.model.Account;
+import nl.workshop1.utility.Converter;
 import nl.workshop1.utility.Slf4j;
 
 /**
@@ -13,13 +15,28 @@ import nl.workshop1.utility.Slf4j;
  */
 public class AccountDAOImpl implements AccountDAO {
 
-    private final String ACCOUNT_SELECT = "SELECT email, wachtwoord, account_type FROM account WHERE email = ?";
-    private final String ACCOUNT_LIKE = "SELECT email, wachtwoord, account_type FROM account WHERE email like ?";
-    private final String ACCOUNT_DELETE = "delete from account where email = ?";
-    private final String ACCOUNT_INSERT = " insert into account (email, wachtwoord, account_type) values (?, ?, ?)";
-    private final String ACCOUNT_UPDATE = "update account set wachtwoord = ?, account_type = ? where email = ?";
+    private final String ACCOUNT_SELECT
+            = "SELECT email, wachtwoord, account_type, klant_id "
+            + "FROM account "
+            + "WHERE email = ?";
 
-    private ArrayList<Account> selectAccount(String query, String userName) {
+    private final String ACCOUNT_LIKE
+            = "SELECT email, wachtwoord, account_type, klant_id "
+            + "FROM account "
+            + "WHERE email like ?";
+
+    private final String ACCOUNT_DELETE
+            = "delete from account where email = ?";
+
+    private final String ACCOUNT_INSERT
+            = "insert into account (email, wachtwoord, account_type,klant_id) values (?, ?, ?, ?)";
+
+    private final String ACCOUNT_UPDATE
+            = "update account "
+            + "set wachtwoord=?,account_type=?,klant_id=? "
+            + "where email = ?";
+
+    protected ArrayList<Account> selectAccount(String query, String userName) {
 
         Slf4j.getLogger().info(query + " " + userName);
 
@@ -36,8 +53,8 @@ public class AccountDAOImpl implements AccountDAO {
                     Account account = new Account();
                     account.setUserName(resultSet.getString("email"));
                     account.setWachtwoord(resultSet.getString("wachtwoord"));
-                    account.setRole(resultSet.getString("account_type"));
-
+                    account.setRole(Converter.stringNaarRole(resultSet.getString("account_type")));
+                    account.setKlantId(resultSet.getInt("klant_id"));
                     accountList.add(account);
                 }
             }
@@ -97,7 +114,12 @@ public class AccountDAOImpl implements AccountDAO {
 
             pstmtObj.setString(1, account.getUserName());
             pstmtObj.setString(2, account.getWachtwoord());
-            pstmtObj.setString(3, account.getRole().getDescription().substring(0, 1));
+            pstmtObj.setString(3, Converter.EnumNaarDB(account.getRole()));
+            if (account.getKlant() != null) {
+                pstmtObj.setInt(4, account.getKlant().getId());
+            } else {
+                pstmtObj.setNull(4, Types.INTEGER);
+            }
 
             pstmtObj.execute();
             Slf4j.getLogger().info("insertAccount() ended.");
@@ -117,8 +139,13 @@ public class AccountDAOImpl implements AccountDAO {
             PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_UPDATE);
 
             pstmtObj.setString(1, account.getWachtwoord());
-            pstmtObj.setString(2, account.getRole().getDescription().substring(0, 1));
-            pstmtObj.setString(3, account.getUserName());
+            pstmtObj.setString(2, Converter.EnumNaarDB(account.getRole()));
+            if (account.getKlant() != null) {
+                pstmtObj.setInt(3, account.getKlant().getId());
+            } else {
+                pstmtObj.setNull(3, Types.INTEGER);
+            }
+            pstmtObj.setString(4, account.getUserName());
 
             pstmtObj.execute();
             Slf4j.getLogger().info("updateAccount() ended.", pstmtObj.toString());

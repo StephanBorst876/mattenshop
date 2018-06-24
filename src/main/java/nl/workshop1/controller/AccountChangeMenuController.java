@@ -1,7 +1,11 @@
 package nl.workshop1.controller;
 
+import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.menu.AccountChangeMenu;
-import nl.workshop1.view.AccountChangeMenuView;
+import nl.workshop1.model.Account;
+import nl.workshop1.model.Klant;
+import nl.workshop1.model.Role;
+import nl.workshop1.view.AccountView;
 
 /**
  *
@@ -9,66 +13,60 @@ import nl.workshop1.view.AccountChangeMenuView;
  */
 public class AccountChangeMenuController extends MenuController {
 
-    private AccountChangeMenu accountChangeMenu;
-    private AccountChangeMenuView accountChangeMenuView;
-    private int accountMode;
+    private AccountView accountView;
+    private Account initialAccount = null;
 
-    public AccountChangeMenuController(int mode, AccountChangeMenu accountChangeMenu, AccountChangeMenuView accountChangeMenuView) {
-        this.accountChangeMenu = accountChangeMenu;
-        this.accountChangeMenuView = accountChangeMenuView;
-        this.accountMode = mode;
+    public AccountChangeMenuController() {
+        // Een nieuw account
+        accountView = new AccountView(MODE_NIEUW, new AccountChangeMenu("Account toevoegen"));
+    }
+
+    public AccountChangeMenuController(Account account) {
+        // bestaand account
+        initialAccount = account;
+
+        accountView = new AccountView(MODE_WIJZIG, new AccountChangeMenu("Account wijzigen"), account);
     }
 
     @Override
-    public void buildOptionsMenu() {
-        accountChangeMenu.clearSubMenu();
-        if (accountMode == MODE_NIEUW) {
-            // New account may change the userName
-            accountChangeMenu.addSubMenu(formatText("Username") + accountChangeMenu.getAccount().getUserName(), "1");
-        } else {
-            // Modifying an account, username is not allowed to change
-            accountChangeMenu.addSubMenu(formatText("Username") + accountChangeMenu.getAccount().getUserName(), "99");
-        }
-        accountChangeMenu.addSubMenu(formatText("Wachtwoord") + accountChangeMenu.getAccount().getWachtwoord(), "2");
-        accountChangeMenu.addSubMenu(formatText("Role") + accountChangeMenu.getAccount().getRoleDescription(), "3");
-        accountChangeMenu.addSubMenu("Opslaan", "4");
-    }
-
-    @Override
-    public void handleMenu() {
-        // Initially ask for input all datafields
-        if (accountMode == MODE_NIEUW) {
-            accountChangeMenu.getAccount().setUserName(accountChangeMenuView.getInputUsername());
-            accountChangeMenu.getAccount().setWachtwoord(accountChangeMenuView.getInputWachtwoord());
-            accountChangeMenu.getAccount().setRole(accountChangeMenuView.getInputRole());
-        }
-        while (true) {
-            buildOptionsMenu();
-            accountChangeMenu.drawMenu();
-            switch (accountChangeMenu.userChoice()) {
-                case "0":
-                    return;
-                case "1":
-                    accountChangeMenu.getAccount().setUserName(accountChangeMenuView.getInputUsername());
-                    break;
-                case "2":
-                    accountChangeMenu.getAccount().setWachtwoord(accountChangeMenuView.getInputWachtwoord());
-                    break;
-                case "3":
-                    accountChangeMenu.getAccount().setRole(accountChangeMenuView.getInputRole());
-                    break;
-                case "4":
-                    if (accountMode == MODE_NIEUW) {
-                        AccountDAOController.insertAccount(accountChangeMenu.getAccount());
-                    } else {
-                        AccountDAOController.updateAccount(accountChangeMenu.getAccount());
-                    }
-                    return;
-                case "99":
-                    accountChangeMenu.getMenuView().showMessage("\nWijzigen Username is NIET toegestaan!");
-                    break;
+    public void runController() {
+        if (initialAccount != null) {
+            if (initialAccount.getRole() == Role.ROLE_KLANT) {
+                // Zoek ook de klantgegevens op
+                initialAccount.setKlant(selectKlant());
             }
         }
+
+        while (true) {
+            requestedAction = accountView.runViewer();
+            switch (requestedAction) {
+                case "0":
+                    return;
+                case "4":
+                    // Zoek naar klantgegevens
+                    break;
+                case "5":
+                    // update / insert
+                    if (initialAccount == null) {
+                        // Insert
+                        DAOFactory.getAccountDAO().insertAccount(accountView.getAccount());
+                    } else {
+                        DAOFactory.getAccountDAO().updateAccount(accountView.getAccount());
+                    }
+                    return;
+
+            }
+        }
+    }
+
+    protected Klant selectKlant() {
+        KlantMenuController klantMenuCtrl = new KlantMenuController(MenuController.CONTROLLER_MODE_SEARCH);
+        klantMenuCtrl.runController();
+        Klant klant = klantMenuCtrl.getKlantSelected();
+        if (klant != null) {
+            return klant;
+        }
+        return null;
     }
 
 }

@@ -1,27 +1,21 @@
 use mattenshop;
 
--- -----------------------------------------------------
--- Table `mattenshop`.`account`
--- -----------------------------------------------------
-DELETE FROM account;
-INSERT INTO account (email, wachtwoord, account_type) VALUES ("stephan@borst.nl", "stephan", "M");
-INSERT INTO account (email, wachtwoord, account_type) VALUES ("tom@devos.nl", "tom", "M");
-INSERT INTO account (email, wachtwoord, account_type) VALUES ("boer@piet.nl", "piet", "A");
+
 
 -- -----------------------------------------------------
 -- Table `mattenshop`.`klant`
 -- Table `mattenshop`.`adres`
 -- -----------------------------------------------------
+DELETE FROM account;
 DELETE FROM adres;
 DELETE FROM klant;
-INSERT INTO klant (email,voornaam,achternaam,tussenvoegsel,sortering) VALUES ("klant1@klant.nl", "Jan", "Klant1", "" , 3);
-SELECT LAST_INSERT_ID() INTO @last_klantid;
+INSERT INTO klant (id,email,voornaam,achternaam,tussenvoegsel,sortering) VALUES (1,"klant1@klant.nl", "Jan", "Klant1", "" , 3);
 INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) VALUES 
-("postadres",12,"h","2211XX","Oegstgeest",@last_klantid, 'P' );
+("postadres",12,"h","2211XX","Oegstgeest",1, 'P' );
 INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) VALUES 
-("factuuradres",12,"h","2211XX","Oegstgeest",@last_klantid, 'F' );
+("factuuradres",12,"h","2211XX","Oegstgeest",1, 'F' );
 INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) VALUES 
-("bezorgadres",12,"h","2211XX","Oegstgeest",@last_klantid, 'B' );
+("bezorgadres",12,"h","2211XX","Oegstgeest",1, 'B' );
 
 INSERT INTO klant (email,voornaam,achternaam,tussenvoegsel,sortering) VALUES ("klant2@klant.nl", "Kees", "Klant2", "" , 3);
 SELECT LAST_INSERT_ID() INTO @last_klantid;
@@ -52,6 +46,14 @@ INSERT INTO klant (email,voornaam,achternaam,tussenvoegsel,sortering) VALUES ("t
 SELECT LAST_INSERT_ID() INTO @last_klantid;
 INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) VALUES 
 ("postadres",12,"h","2211XX","Oegstgeest",@last_klantid, 'P' );
+
+-- -----------------------------------------------------
+-- Table `mattenshop`.`account`
+-- -----------------------------------------------------
+INSERT INTO account (email, wachtwoord, account_type) VALUES ("boer@piet.nl", "piet", "A");
+INSERT INTO account (email, wachtwoord, account_type) VALUES ("stephan@borst.nl", "stephan", "M");
+INSERT INTO account (email, wachtwoord, account_type,klant_id) VALUES ("klant@klant.nl", "klant", "K", 1);
+
 
 -- -----------------------------------------------------
 -- Table `mattenshop`.`artikel`

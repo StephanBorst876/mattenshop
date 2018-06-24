@@ -2,11 +2,7 @@ package nl.workshop1.controller;
 
 import nl.workshop1.model.Role;
 import nl.workshop1.menu.HoofdMenu;
-import nl.workshop1.menu.AccountMenu;
-import nl.workshop1.menu.AfsluitMenu;
-import nl.workshop1.menu.KlantMenu;
-import nl.workshop1.menu.ProductMenu;
-import nl.workshop1.view.AfsluitView;
+import nl.workshop1.view.SimpleMenuView;
 
 /**
  *
@@ -15,55 +11,62 @@ import nl.workshop1.view.AfsluitView;
 public class HoofdMenuController extends MenuController {
 
     private HoofdMenu hoofdMenu;
+    private SimpleMenuView hoofdMenuView;
+    private Role role;
 
-    public HoofdMenuController(HoofdMenu hoofdMenu) {
-        this.hoofdMenu = hoofdMenu;
+    public HoofdMenuController(Role role) {
+        // Hoofdmenu heeft de Role nodig, omdat dat de opties
+        // in het menu bepaald.
+        this.role = role;
+        this.hoofdMenu = new HoofdMenu();
+        this.hoofdMenuView = new SimpleMenuView(this.hoofdMenu);
     }
 
     @Override
-    public void buildOptionsMenu() {
-        hoofdMenu.resetMenu();
+    public void runController() {
+
+        hoofdMenu.clearSubMenuList();
         hoofdMenu.addSubMenu("Bestellingen", "1");
-        if (hoofdMenu.getRole().equals(Role.ROLE_ADMIN) || hoofdMenu.getRole().equals(Role.ROLE_MEDEWERKER)) {
+        if (role.equals(Role.ROLE_ADMIN) || role.equals(Role.ROLE_MEDEWERKER)) {
             hoofdMenu.addSubMenu("Klanten", "2");
         }
-        if (hoofdMenu.getRole().equals(Role.ROLE_ADMIN) || hoofdMenu.getRole().equals(Role.ROLE_MEDEWERKER)) {
-            hoofdMenu.addSubMenu("Producten", "3");
+        if (role.equals(Role.ROLE_ADMIN) || role.equals(Role.ROLE_MEDEWERKER)) {
+            hoofdMenu.addSubMenu("Artikelen", "3");
         }
-        if (hoofdMenu.getRole().equals(Role.ROLE_ADMIN)) {
+        if (role.equals(Role.ROLE_ADMIN)) {
             hoofdMenu.addSubMenu("Accounts", "4");
         }
-    }
 
-    @Override
-    public void handleMenu() {
         while (true) {
-            hoofdMenu.drawMenu();
-            switch (hoofdMenu.userChoice()) {
+            hoofdMenuView.drawMenu();
+            switch (hoofdMenuView.userChoice()) {
                 case "0":
-                    AfsluitMenu afsluitMenu = new AfsluitMenu();
-                    AfsluitView afsluitView = new AfsluitView();
-                    AfsluitMenuController AfsluitCtrl = new AfsluitMenuController(afsluitMenu, afsluitView);
-                    AfsluitCtrl.runController();
-                    break;
+                    // Afsluiten
+                    AfsluitMenuController afsluitCtrl = new AfsluitMenuController();
+                    afsluitCtrl.runController();
+                    if (afsluitCtrl.getRequestedAction() == "1") {
+                        // Oeps. Pas hier op: Alle controllers/menu's geven optie=0 als zijnde
+                        // terug, maar de afsluitController geeft 1 als Afsluiten.
+                        return;
+                    }
                 case "1":
+                    // Bestellingen
                     System.out.println("Bestellingen");
                     break;
                 case "2":
-                    KlantMenu klantMenu = new KlantMenu();
-                    KlantMenuController klantMenuCtrl = new KlantMenuController(klantMenu, MenuController.CONTROLER_MODE_ADMIN);
+                    // Klanten
+                    KlantMenuController klantMenuCtrl = new KlantMenuController(MenuController.CONTROLLER_MODE_ADMIN);
                     klantMenuCtrl.runController();
                     break;
                 case "3":
-                    ProductMenu productMenu = new ProductMenu();
-                    ProductMenuController productMenuCtrl = new ProductMenuController(productMenu);
-                    productMenuCtrl.runController();
+                    // Artikelen
+                    ArtikelMenuController artikelMenuCtrl = new ArtikelMenuController();
+                    artikelMenuCtrl.runController();
                     break;
                 case "4":
-                    AccountMenu accountMenu = new AccountMenu();
-                    AccountMenuController accountCtrl = new AccountMenuController(accountMenu);
+                    // Accounts
+                    AccountMenuController accountCtrl = new AccountMenuController();
                     accountCtrl.runController();
-                    break;
             }
         }
     }

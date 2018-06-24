@@ -139,15 +139,7 @@ public class Adres implements Cloneable {
         }
     }
 
-    public String display() {
-        StringBuilder str = new StringBuilder();
-        str.append(postcode).append(", ").append(straatNaam).append(" ").append(huisNummer);
-        if (!toevoeging.equals("")) {
-            str.append("-").append(toevoeging);
-        }
-        str.append(", ").append(woonplaats);
-        return str.toString();
-    }
+    
 
     @Override
     public Object clone() {

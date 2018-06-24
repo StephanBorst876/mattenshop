@@ -2,7 +2,10 @@ package nl.workshop1.DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import nl.workshop1.model.Adres;
+import nl.workshop1.utility.Converter;
 import nl.workshop1.utility.Slf4j;
 
 /**
@@ -11,6 +14,11 @@ import nl.workshop1.utility.Slf4j;
  */
 public class AdresDAOImpl implements AdresDAO {
 
+    private final String ADRES_SELECT
+            = "SELECT id,straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type "
+            + "FROM adres "
+            + "WHERE klant_id = ?";
+    
     private final String ADRES_INSERT = "insert into adres "
             + "(straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) "
             + "values (?,?,?,?,?,?,?)";
@@ -56,7 +64,7 @@ public class AdresDAOImpl implements AdresDAO {
             pstmtObj.setString(4, adres.getPostcode());
             pstmtObj.setString(5, adres.getWoonplaats());
             pstmtObj.setInt(6, adres.getKlantId());
-            pstmtObj.setString(7, adres.getAdresType().getDescription().substring(0, 1));
+            pstmtObj.setString(7, Converter.EnumNaarDB(adres.getAdresType()));
 
             pstmtObj.execute();
 
@@ -69,7 +77,7 @@ public class AdresDAOImpl implements AdresDAO {
 
     @Override
     public void updateAdres(Adres adres) {
-        Slf4j.getLogger().info("updateAdres()");
+        Slf4j.getLogger().info("updateAdres({})", adres.getId());
 
         try {
 
@@ -89,6 +97,42 @@ public class AdresDAOImpl implements AdresDAO {
         } catch (Exception sqlException) {
             Slf4j.getLogger().error("SQL exception occurred ", sqlException);
         }
+    }
+
+    @Override
+    public ArrayList<Adres> readAdresWithKlantId(int klantId) {
+
+        Slf4j.getLogger().info(ADRES_SELECT + " " + klantId);
+
+        ArrayList<Adres> adresList = new ArrayList<>();
+
+        try {
+
+            Connection connObj = DbConnection.getConnection();
+            PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_SELECT);
+
+            pstmtObj.setInt(1, klantId);
+            try (ResultSet resultSet = pstmtObj.executeQuery()) {
+                while (resultSet.next()) {
+                    Adres adres = new Adres();
+                    // id,straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type
+                    adres.setId(resultSet.getInt("id"));
+                    adres.setStraatNaam(resultSet.getString("straatnaam"));
+                    adres.setHuisNummer(resultSet.getInt("huisnummer"));
+                    adres.setToevoeging(resultSet.getString("toevoeging"));
+                    adres.setPostcode(resultSet.getString("postcode"));
+                    adres.setWoonplaats(resultSet.getString("woonplaats"));
+                    adres.setKlantId(resultSet.getInt("klant_id"));
+                    adres.setAdresType(Converter.stringNaarAdresType(resultSet.getString("adres_type")));
+                                        
+                    adresList.add(adres);
+                }
+            }
+
+        } catch (Exception sqlException) {
+            Slf4j.getLogger().error("SQL exception occurred", sqlException);
+        }
+        return adresList;
     }
 
 }

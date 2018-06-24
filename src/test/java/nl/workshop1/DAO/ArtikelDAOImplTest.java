@@ -46,7 +46,6 @@ public class ArtikelDAOImplTest {
      */
     @Test
     public void testDeleteArtikel() {
-        System.out.println("deleteArtikel");
         int id = 0;
         ArtikelDAOImpl instance = new ArtikelDAOImpl();
         instance.deleteArtikel(id);
@@ -57,7 +56,6 @@ public class ArtikelDAOImplTest {
      */
     @Test
     public void testInsertArtikel() {
-        System.out.println("insertArtikel");
         Artikel artikel = new Artikel();
         artikel.setNaam("testArtikelStephan");
         artikel.setPrijs(new BigDecimal(12.12));
@@ -74,7 +72,6 @@ public class ArtikelDAOImplTest {
      */
     @Test
     public void testUpdateArtikel() {
-        System.out.println("updateArtikel");
         Artikel artikel = new Artikel();
         artikel.setNaam("testArtikelStephan");
         artikel.setPrijs(new BigDecimal(12.12));

@@ -10,12 +10,4 @@ public class AfsluitMenu extends Menu {
         super("Afsluiten");
     }
 
-    @Override
-    public void buildMenu() {
-        resetMenu();
-        disableAddReturnOption();
-        addSubMenu("Afsluiten", "1");
-        addSubMenu("Doorgaan", "2");
-    }
-
 }
