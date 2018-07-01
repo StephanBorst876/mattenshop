@@ -31,7 +31,7 @@ public abstract class UserInput {
 
             if (emptyAllowed) {
                 // Alleen bij inloggen
-                if (username.equals("")) {
+                if (username.isEmpty()) {
                     return null;
                 }
             }
@@ -52,7 +52,7 @@ public abstract class UserInput {
         do {
             OutputText.showText("Wachtwoord     : ");
             String wachtwoord = input.nextLine();
-            if (!wachtwoord.equals("")) {
+            if (!wachtwoord.isEmpty()) {
                 return wachtwoord;
             }
 
@@ -60,7 +60,7 @@ public abstract class UserInput {
     }
 
     public static boolean getInputAkkoord(String informatial) {
-        if (!informatial.equals("")) {
+        if (!informatial.isEmpty()) {
             OutputText.showMessage(informatial);
         }
         do {

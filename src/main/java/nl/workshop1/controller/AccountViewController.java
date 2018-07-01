@@ -1,39 +1,41 @@
 package nl.workshop1.controller;
 
 import nl.workshop1.DAO.DAOFactory;
-import nl.workshop1.menu.AccountChangeMenu;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
 import nl.workshop1.view.AccountView;
+import nl.workshop1.view.Menu;
 
 /**
  *
  * @author FeniksBV
  */
-public class AccountChangeMenuController extends MenuController {
+public class AccountViewController extends Controller {
 
     private AccountView accountView;
     private Account initialAccount = null;
 
-    public AccountChangeMenuController() {
+    public AccountViewController() {
         // Een nieuw account
-        accountView = new AccountView(MODE_NIEUW, new AccountChangeMenu("Account toevoegen"));
+        accountView = new AccountView(MODE_NIEUW, new Menu("Account toevoegen"));
     }
 
-    public AccountChangeMenuController(Account account) {
+    public AccountViewController(Account account) {
         // bestaand account
         initialAccount = account;
-
-        accountView = new AccountView(MODE_WIJZIG, new AccountChangeMenu("Account wijzigen"), account);
+        accountView = new AccountView(MODE_WIJZIG, new Menu("Account wijzigen"), account);
     }
 
     @Override
     public void runController() {
+
+        // Indien een bestaand account wijzigen en het betreft een Role.KLANT
+        // dan initialiseren we de klant data
         if (initialAccount != null) {
-            if (initialAccount.getRole() == Role.ROLE_KLANT) {
-                // Zoek ook de klantgegevens op
-                initialAccount.setKlant(selectKlant());
+            if (initialAccount.getRole() == Role.Klant) {
+                Klant klant = DAOFactory.getKlantDAO().readKlant(initialAccount.getKlantId());
+                accountView.setKlant(klant);
             }
         }
 
@@ -43,7 +45,13 @@ public class AccountChangeMenuController extends MenuController {
                 case "0":
                     return;
                 case "4":
-                    // Zoek naar klantgegevens
+                    // Selecteer een klant
+                    KlantMenuController klantMenuCtrl = new KlantMenuController(Controller.CONTROLLER_MODE_SEARCH);
+                    klantMenuCtrl.runController();
+                    Klant klant = klantMenuCtrl.getKlantSelected();
+                    if (klant != null) {
+                        accountView.setKlant(klant);
+                    }
                     break;
                 case "5":
                     // update / insert
@@ -57,16 +65,6 @@ public class AccountChangeMenuController extends MenuController {
 
             }
         }
-    }
-
-    protected Klant selectKlant() {
-        KlantMenuController klantMenuCtrl = new KlantMenuController(MenuController.CONTROLLER_MODE_SEARCH);
-        klantMenuCtrl.runController();
-        Klant klant = klantMenuCtrl.getKlantSelected();
-        if (klant != null) {
-            return klant;
-        }
-        return null;
     }
 
 }

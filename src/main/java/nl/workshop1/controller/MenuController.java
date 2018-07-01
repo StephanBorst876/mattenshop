@@ -1,44 +1,127 @@
 package nl.workshop1.controller;
 
+import java.util.ArrayList;
+import nl.workshop1.DAO.DAOFactory;
+import nl.workshop1.model.Account;
+import nl.workshop1.model.Artikel;
+import nl.workshop1.view.Menu;
+import nl.workshop1.view.MenuView;
+import nl.workshop1.view.UserInput;
+
 /**
  *
  * @author FeniksBV
  */
-public abstract class MenuController {
+public class MenuController extends Controller {
 
-    // KlantCotroller en ArtikelController kunnen door een ADMIN worden
-    // beheerd (muteren/wijzigen/verwijderen), maar kunnen
-    // door klanten ook worden gebruikt voor alleen zoeken/selecteren.
-    public static final int CONTROLLER_MODE_ADMIN = 1;
-    public static final int CONTROLLER_MODE_SEARCH = 2;
+    private Menu menu;
+    private MenuView menuView;
 
-    // Een controller kan een Entity Nieuw aanmaken of Wijzigen
-    public static final int MODE_NIEUW = 1;
-    public static final int MODE_WIJZIG = 2;
-
-    public String requestedAction;
-
-    public MenuController() {
-        this.requestedAction = "";
+    public MenuController(String titel) {
+        this.menu = new Menu(titel);
+        this.menuView = new MenuView(this.menu);
     }
 
-    /**
-     *  Uitvoeren van de controller
-     */
-    public abstract void runController();
+    @Override
+    public void runController() {
 
-    /**
-     *  Wordt gebruikt bij zoeken met filter
-     * @return  Het menu
-     */
-//    TODO : public abstract Menu getMenu();
+        while (true) {
 
-    /**
-     *
-     * @return  Door de gebruiker gevraagde actie
-     */
-    public String getRequestedAction() {
-        return requestedAction;
+            menu.buildGeneralSubMenuList();
+            searchWithFilter();
+
+            menuView.setMenu(menu);
+            requestedAction = menuView.runViewer();
+            switch (requestedAction) {
+                case "0":
+                    return;
+
+                case "1":
+
+                case "3":
+                    startViewer(requestedAction);
+                    menu.setRecordSelected(false);
+                    break;
+
+                case "2":
+                    // Nieuw filter, doorloop searchWithFilter en menu-opbouw
+                    break;
+
+                case "4":
+                    // Verwijder
+                    verwijderRecord();
+                    menu.setRecordSelected(false);
+                    break;
+
+            }
+        }
+    }
+
+    protected void startViewer(String reqAction) {
+        if (menu.getTitle().equals(TITEL_ACCOUNTS)) {
+            AccountViewController accountCtrl;
+            if (requestedAction.equals("1")) {
+                // NIEUW
+                accountCtrl = new AccountViewController();
+            } else {
+                // WIJZIG
+                Object object = menu.getRecordList().get(menu.getRecordSelectedIndex());
+                accountCtrl = new AccountViewController((Account) object);
+            }
+            accountCtrl.runController();
+        } else if (menu.getTitle().equals(TITEL_ARTIKELEN)) {
+            ArtikelViewController artikelCtrl;
+            if (requestedAction.equals("1")) {
+                // NIEUW
+                artikelCtrl = new ArtikelViewController();
+            } else {
+                // WIJZIG
+                Object object = menu.getRecordList().get(menu.getRecordSelectedIndex());
+                artikelCtrl = new ArtikelViewController((Artikel) object);
+            }
+            artikelCtrl.runController();
+        } else if (menu.getTitle().equals(TITEL_BESTELLINGEN)) {
+            // Start de controller voor de bestelregels
+            BestelRegelMenuController bestelRegelCtrl;
+            if (requestedAction.equals("1")) {
+                // NIEUW
+                bestelRegelCtrl = new BestelRegelMenuController(menu.getKlant());
+            } else {
+                // WIJZIG
+                bestelRegelCtrl = new BestelRegelMenuController(
+                        menu.getKlant(), menu.getBestelling());
+            }
+            bestelRegelCtrl.runController();
+        }
+    }
+
+    protected void verwijderRecord() {
+        Object object = menu.getRecordList().get(menu.getRecordSelectedIndex());
+        if (object instanceof Account) {
+            if (UserInput.getInputAkkoord("\nVerwijderen account !!")) {
+                DAOFactory.getAccountDAO().deleteAccount(((Account) object).getUserName());
+            }
+        } else if (object instanceof Artikel) {
+            if (UserInput.getInputAkkoord("\nVerwijderen artikel !!")) {
+                DAOFactory.getArtikelDAO().deleteArtikel(((Artikel) object).getId());
+            }
+        }
+    }
+
+    protected void searchWithFilter() {
+        menu.setRecordSelected(false);
+        menu.getRecordList().clear();
+        if (menu.getTitle().equals(TITEL_ACCOUNTS)) {
+            ArrayList<Account> tmpList = DAOFactory.getAccountDAO().readAccountWithFilter(menu.getFilter());
+            for (Account account : tmpList) {
+                menu.getRecordList().add(account);
+            }
+        } else if (menu.getTitle().equals(TITEL_ARTIKELEN)) {
+            ArrayList<Artikel> tmpList = DAOFactory.getArtikelDAO().readArtikelWithFilter(menu.getFilter());
+            for (Artikel artikel : tmpList) {
+                menu.getRecordList().add(artikel);
+            }
+        }
     }
 
 }

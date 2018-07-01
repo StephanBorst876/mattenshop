@@ -5,7 +5,7 @@ package nl.workshop1.model;
  * @author FeniksBV
  */
 public enum Bestelstatus {
-    IN_BEHANDELING("In behandeling"), AFGEHANDELD("Afgehandeld");
+    Onderhanden("Onderhanden"), Afgehandeld("Afgehandeld");
 
     private String description;
 

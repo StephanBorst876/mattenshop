@@ -2,7 +2,6 @@ package nl.workshop1.utility;
 
 import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.model.Account;
-import nl.workshop1.model.Role;
 import org.apache.commons.validator.routines.EmailValidator;
 
 /**
@@ -40,21 +39,8 @@ public class Validator {
 
     public static boolean validPostcode(String postcode) {
         // Postcode heeft het formaat 9999XX
-        if (postcode.matches("/^[1-9][0-9]{3}?[a-z]{2}$/i")) {
-            return true;
-        } else {
-            return false;
-        }
+        return postcode.matches("[1-9][0-9]{3}[A-Z]{2}");
+
     }
 
-    public static boolean validAccount(Account account) {
-        // Alle data velden zijn gevalideerd bij input.
-        // Controleer of voor role=Klant ook een klant is gespecificeerd
-        if (account.getRole().equals(Role.ROLE_KLANT)) {
-            if (account.getKlant() == null) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

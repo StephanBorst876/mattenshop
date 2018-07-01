@@ -13,7 +13,6 @@ public class Account implements Cloneable {
     private String wachtwoord;
     private Role role;
     private int klantId;
-    private Klant klant = null;
 
     public Account() {
         this("", "");
@@ -22,7 +21,7 @@ public class Account implements Cloneable {
     public Account(String userName, String wachtwoord) {
         this.userName = userName;
         this.wachtwoord = wachtwoord;
-        this.role = Role.ROLE_KLANT;
+        this.role = Role.Klant;
     }
 
     public String getUserName() {
@@ -53,14 +52,6 @@ public class Account implements Cloneable {
      */
     public void setKlantId(int klantId) {
         this.klantId = klantId;
-    }
-
-    public Klant getKlant() {
-        return klant;
-    }
-
-    public void setKlant(Klant klant) {
-        this.klant = klant;
     }
 
     public Role getRole() {

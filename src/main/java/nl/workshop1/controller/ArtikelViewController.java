@@ -1,30 +1,30 @@
 package nl.workshop1.controller;
 
 import nl.workshop1.DAO.DAOFactory;
-import nl.workshop1.menu.ArtikelChangeMenu;
 import nl.workshop1.model.Artikel;
 import nl.workshop1.view.ArtikelView;
+import nl.workshop1.view.Menu;
 
 /**
  *
  * @author FeniksBV
  */
-public class ArtikelChangeMenuController extends MenuController {
+public class ArtikelViewController extends Controller {
 
-    private ArtikelChangeMenu artikelChangeMenu;
+    private Menu artikelChangeMenu;
     private ArtikelView artikelView;
     private Artikel initialArtikel;
 
-    public ArtikelChangeMenuController() {
+    public ArtikelViewController() {
         // Een nieuw account
-        artikelView = new ArtikelView(MODE_NIEUW, new ArtikelChangeMenu("Artikel toevoegen"));
+        artikelView = new ArtikelView(MODE_NIEUW, new Menu("Artikel toevoegen"));
     }
 
-    public ArtikelChangeMenuController(Artikel artikel) {
+    public ArtikelViewController(Artikel artikel) {
         // bestaand account
         initialArtikel = artikel;
 
-        artikelView = new ArtikelView(MODE_WIJZIG, new ArtikelChangeMenu("Artikel wijzigen"), artikel);
+        artikelView = new ArtikelView(MODE_WIJZIG, new Menu("Artikel wijzigen"), artikel);
     }
 
     @Override

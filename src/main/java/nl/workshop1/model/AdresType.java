@@ -5,7 +5,7 @@ package nl.workshop1.model;
  * @author FeniksBV
  */
 public enum AdresType {
-    ADRES_POST("Postadres"),ADRES_FACTUUR("Factuuradres"),ADRES_BEZORG("Bezorgadres");
+    Postadres("Postadres"),Factuuradres("Factuuradres"),Bezorgadres("Bezorgadres");
     // Postadres/Factuuradres/Bezorgadres
     // Postadres is verplicht
     // Factuuradres kan Postadres overrulen
@@ -24,11 +24,11 @@ public enum AdresType {
     public static AdresType getAdresType( String adresType ){
         switch (adresType) {
             case "P":
-                return AdresType.ADRES_POST;
+                return AdresType.Postadres;
             case "F":
-                return AdresType.ADRES_FACTUUR;
+                return AdresType.Factuuradres;
             case "B":
-                return AdresType.ADRES_BEZORG;
+                return AdresType.Bezorgadres;
             default:
                 return null;
         }

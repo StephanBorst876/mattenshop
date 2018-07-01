@@ -10,6 +10,8 @@ public class DAOFactory {
     private static KlantDAO klantDAO = new KlantDAOImpl();
     private static AdresDAO adresDAO = new AdresDAOImpl();
     private static ArtikelDAO artikelDAO = new ArtikelDAOImpl();
+    private static BestellingDAO bestellingDAO = new BestellingDAOImpl();
+    private static BestelRegelDAO bestelRegelDAO = new BestelRegelDAOImpl();
 
     public static AccountDAO getAccountDAO() {
         return accountDAO;
@@ -25,5 +27,13 @@ public class DAOFactory {
     
     public static ArtikelDAO getArtikelDAO() {
         return artikelDAO;
+    }
+    
+    public static BestellingDAO getBestellingDAO(){
+        return bestellingDAO;
+    }
+    
+    public static BestelRegelDAO getBestelRegelDAO() {
+        return bestelRegelDAO;
     }
 }

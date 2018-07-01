@@ -1,27 +1,26 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.MenuController;
-import nl.workshop1.menu.ArtikelChangeMenu;
+import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Artikel;
 
 /**
  *
  * @author FeniksBV
  */
-public class ArtikelView extends MenuView {
+public class ArtikelView extends View {
 
     private int artikelMode;
-    private ArtikelChangeMenu artikelChangeMenu;
+    private Menu artikelChangeMenu;
     private Artikel artikel;
 
-    public ArtikelView(int mode, ArtikelChangeMenu artikelChangeMenu) {
+    public ArtikelView(int mode, Menu artikelChangeMenu) {
         super(artikelChangeMenu);
         this.artikelMode = mode;
         this.artikelChangeMenu = artikelChangeMenu;
         artikel = new Artikel();
     }
 
-    public ArtikelView(int mode, ArtikelChangeMenu artikelChangeMenu, Artikel artikel) {
+    public ArtikelView(int mode, Menu artikelChangeMenu, Artikel artikel) {
         super(artikelChangeMenu);
         this.artikelMode = mode;
         this.artikelChangeMenu = artikelChangeMenu;
@@ -32,8 +31,8 @@ public class ArtikelView extends MenuView {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (artikelMode == MenuController.MODE_NIEUW) {
-            if (artikel.getNaam().equals("")) {
+        if (artikelMode == Controller.MODE_NIEUW) {
+            if (artikel.getNaam().isEmpty()) {
                 // Nu weet je zeker dat dit de eerste keer is
                 artikel.setNaam(getInputArtikelnaam());
                 artikel.setPrijs(getInputPrijs());

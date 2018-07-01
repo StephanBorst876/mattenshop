@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import nl.workshop1.model.Adres;
-import nl.workshop1.utility.Converter;
+import nl.workshop1.model.AdresType;
 import nl.workshop1.utility.Slf4j;
 
 /**
@@ -64,7 +64,7 @@ public class AdresDAOImpl implements AdresDAO {
             pstmtObj.setString(4, adres.getPostcode());
             pstmtObj.setString(5, adres.getWoonplaats());
             pstmtObj.setInt(6, adres.getKlantId());
-            pstmtObj.setString(7, Converter.EnumNaarDB(adres.getAdresType()));
+            pstmtObj.setString(7, adres.getAdresType().getDescription());
 
             pstmtObj.execute();
 
@@ -123,7 +123,7 @@ public class AdresDAOImpl implements AdresDAO {
                     adres.setPostcode(resultSet.getString("postcode"));
                     adres.setWoonplaats(resultSet.getString("woonplaats"));
                     adres.setKlantId(resultSet.getInt("klant_id"));
-                    adres.setAdresType(Converter.stringNaarAdresType(resultSet.getString("adres_type")));
+                    adres.setAdresType(AdresType.valueOf(resultSet.getString("adres_type")));
                                         
                     adresList.add(adres);
                 }

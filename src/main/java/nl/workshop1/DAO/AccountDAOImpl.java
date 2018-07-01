@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
 import nl.workshop1.model.Account;
-import nl.workshop1.utility.Converter;
+import nl.workshop1.model.Role;
 import nl.workshop1.utility.Slf4j;
 
 /**
@@ -53,7 +53,7 @@ public class AccountDAOImpl implements AccountDAO {
                     Account account = new Account();
                     account.setUserName(resultSet.getString("email"));
                     account.setWachtwoord(resultSet.getString("wachtwoord"));
-                    account.setRole(Converter.stringNaarRole(resultSet.getString("account_type")));
+                    account.setRole(Role.valueOf(resultSet.getString("account_type")));
                     account.setKlantId(resultSet.getInt("klant_id"));
                     accountList.add(account);
                 }
@@ -114,9 +114,10 @@ public class AccountDAOImpl implements AccountDAO {
 
             pstmtObj.setString(1, account.getUserName());
             pstmtObj.setString(2, account.getWachtwoord());
-            pstmtObj.setString(3, Converter.EnumNaarDB(account.getRole()));
-            if (account.getKlant() != null) {
-                pstmtObj.setInt(4, account.getKlant().getId());
+            pstmtObj.setString(3, account.getRole().getDescription());
+            // Indien ROLE_KLANT dan update het klantID, anders null
+            if (account.getRole() == Role.Klant) {
+                pstmtObj.setInt(4, account.getKlantId());
             } else {
                 pstmtObj.setNull(4, Types.INTEGER);
             }
@@ -139,9 +140,9 @@ public class AccountDAOImpl implements AccountDAO {
             PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_UPDATE);
 
             pstmtObj.setString(1, account.getWachtwoord());
-            pstmtObj.setString(2, Converter.EnumNaarDB(account.getRole()));
-            if (account.getKlant() != null) {
-                pstmtObj.setInt(3, account.getKlant().getId());
+            pstmtObj.setString(2, account.getRole().getDescription());
+            if (account.getRole() == Role.Klant) {
+                pstmtObj.setInt(3, account.getKlantId());
             } else {
                 pstmtObj.setNull(3, Types.INTEGER);
             }

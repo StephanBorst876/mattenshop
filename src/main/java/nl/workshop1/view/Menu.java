@@ -1,6 +1,8 @@
-package nl.workshop1.menu;
+package nl.workshop1.view;
 
 import java.util.ArrayList;
+import nl.workshop1.model.Bestelling;
+import nl.workshop1.model.Klant;
 
 /**
  *
@@ -30,6 +32,10 @@ public class Menu {
     // Titel van het menu
     private String title;
     public static String loginName = "";
+
+    // Voor bestellingen, toon de klant en de bestelling
+    private Klant klant = null;
+    private Bestelling bestelling = null;
 
     // Eventuele records (account/artikel/klant etc) die worden getoond
     private boolean recordSelected = false;
@@ -102,6 +108,8 @@ public class Menu {
      * Een algemeen gebruikte menu-opbouw
      */
     public void buildGeneralSubMenuList() {
+        subMenuList.clear();
+        actionList.clear();
         addSubMenu("Nieuw", "1");
         addSubMenu("Zoek" + buildTextForFilter(), "2");
         if (isRecordSelected()) {
@@ -111,12 +119,28 @@ public class Menu {
     }
 
     protected String buildTextForFilter() {
-        if (!filter.equals("")) {
+        if (!filter.isEmpty()) {
             StringBuilder s = new StringBuilder();
             s.append(" <").append(getFilter()).append(">");
             return s.toString();
         }
         return "";
+    }
+
+    public void setKlant(Klant klant) {
+        this.klant = klant;
+    }
+
+    public Klant getKlant() {
+        return klant;
+    }
+
+    public void setBestelling(Bestelling bestelling) {
+        this.bestelling = bestelling;
+    }
+
+    public Bestelling getBestelling() {
+        return bestelling;
     }
 
     /**

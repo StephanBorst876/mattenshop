@@ -1,5 +1,7 @@
+- Enums aangepast naar betere communicatie JAVA<->MySql
+(wel database opnieuw opbouwen en testdata inlezen)
 
-- DAO's: Bestelling en BestelRegel nog doen.
+- DAO's: Bestelling en BestelRegel ben ik mee bezig.
 Moet ik al doende zicht op krijgen.
 ArtikelDAO heeft nu een eigen invulling
 
@@ -8,7 +10,4 @@ ArtikelDAO heeft nu een eigen invulling
 - Zorgen->structuur? Ja, heb ik ook, maar wordt aan gewerkt.
 Single responsibility, idem voor methodes -> heeft mijn aandacht!
 
-Alle classes in de package Menu zou ik kunnen vervangen
-door de class Menu. Dan zou ik de class Menu kunnen verplaatsen
-naar de package View.
-Dit doe ik nog een keer.
+- Package Menu is opgeruimd.

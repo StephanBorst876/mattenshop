@@ -4,7 +4,7 @@ package nl.workshop1.view;
  *
  * @author FeniksBV
  */
-public abstract class OutputText {
+public class OutputText {
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLUE = "\u001B[34m";

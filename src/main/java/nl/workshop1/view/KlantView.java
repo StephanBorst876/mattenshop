@@ -1,36 +1,37 @@
 package nl.workshop1.view;
 
 import java.util.ArrayList;
-import nl.workshop1.controller.MenuController;
-import nl.workshop1.menu.KlantChangeMenu;
+import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
 import nl.workshop1.model.Klant;
-import nl.workshop1.utility.Misc;
 
 /**
  *
  * @author FeniksBV
  */
-public class KlantView extends MenuView {
+public class KlantView extends View {
 
     private int klantMode;
     private AdresType adresType = null;
-    private KlantChangeMenu klantChangeMenu;
+    private Menu klantChangeMenu;
     private Klant klant;
+    private ArrayList<Adres> adresList = null;
 
-    public KlantView(int mode, KlantChangeMenu klantChangeMenu) {
+    public KlantView(int mode, Menu klantChangeMenu) {
         super(klantChangeMenu);
         this.klantMode = mode;
         this.klantChangeMenu = klantChangeMenu;
         klant = new Klant();
+        adresList = new ArrayList<>();
     }
 
-    public KlantView(int mode, KlantChangeMenu klantChangeMenu, Klant klant) {
+    public KlantView(int mode, Menu klantChangeMenu, Klant klant, ArrayList<Adres> adresList) {
         super(klantChangeMenu);
         this.klantMode = mode;
         this.klantChangeMenu = klantChangeMenu;
         this.klant = (Klant) klant.clone();
+        this.adresList = adresList;
     }
 
     public Klant getKlant() {
@@ -45,8 +46,8 @@ public class KlantView extends MenuView {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (klantMode == MenuController.MODE_NIEUW) {
-            if (klant.getAchternaam().equals("")) {
+        if (klantMode == Controller.MODE_NIEUW) {
+            if (klant.getAchternaam().isEmpty()) {
                 // Nu weet je zeker dat dit de eerste keer is
                 klant.setEmail(getInputUsername(false));
                 klant.setVoornaam(getInputVoornaam());
@@ -55,13 +56,10 @@ public class KlantView extends MenuView {
                 klant.setSortering(getInputSortering());
 
                 // Postadres is verplicht, dus ook uitvragen
-                AdresView adresView = new AdresView(klantMode, AdresType.ADRES_POST, null);
+                AdresView adresView = new AdresView(klantMode, AdresType.Postadres, null);
                 adresView.runViewer();
 
-                ArrayList<Adres> adresList = new ArrayList<>();
                 adresList.add(adresView.getAdres());
-
-                klant.setAdresList(adresList);
             }
         }
 
@@ -86,26 +84,23 @@ public class KlantView extends MenuView {
                     break;
                 case "5":
                     // Postadres
-                    adresType = AdresType.ADRES_POST;
+                    adresType = AdresType.Postadres;
                     return requestedAction;
                 case "6":
                     // factuuradres
-                    adresType = AdresType.ADRES_FACTUUR;
+                    adresType = AdresType.Factuuradres;
                     return requestedAction;
                 case "7":
                     // bezorgadres
-                    adresType = AdresType.ADRES_BEZORG;
+                    adresType = AdresType.Bezorgadres;
                     return requestedAction;
                 case "8":
                     // Sortering
                     klant.setSortering(getInputSortering());
                     break;
                 case "9":
-                // Opslaan
-
-                case "99":
-//                klantChangeMenu.getMenuView().showMessage("\nWijzigen email is NIET toegestaan!");
-                    break;
+                    // Opslaan
+                    return requestedAction;
             }
         }
 
@@ -113,29 +108,26 @@ public class KlantView extends MenuView {
 
     protected void buildSubMenuList() {
         klantChangeMenu.clearSubMenuList();
-        if (klantMode == MenuController.MODE_NIEUW) {
-            // New account may change the userName
-            klantChangeMenu.addSubMenu("Email", klant.getEmail(), "1");
-        } else {
-            // Modifying an account, username is not allowed to change
-            klantChangeMenu.addSubMenu("Email", klant.getEmail(), "99");
-        }
+        
+        klantChangeMenu.addSubMenu("Email", klant.getEmail(), "1");
         klantChangeMenu.addSubMenu("Voornaam", klant.getVoornaam(), "2");
         klantChangeMenu.addSubMenu("Tussenvoegsel", klant.getTussenvoegsel(), "3");
         klantChangeMenu.addSubMenu("Achternaam", klant.getAchternaam(), "4");
-        klantChangeMenu.addSubMenu(AdresType.ADRES_POST.getDescription(), displayAdres(AdresType.ADRES_POST), "5");
-        klantChangeMenu.addSubMenu(AdresType.ADRES_FACTUUR.getDescription(), displayAdres(AdresType.ADRES_FACTUUR), "6");
-        klantChangeMenu.addSubMenu(AdresType.ADRES_BEZORG.getDescription(), displayAdres(AdresType.ADRES_BEZORG), "7");
+        klantChangeMenu.addSubMenu(AdresType.Postadres.getDescription(), displayAdres(AdresType.Postadres), "5");
+        klantChangeMenu.addSubMenu(AdresType.Factuuradres.getDescription(), displayAdres(AdresType.Factuuradres), "6");
+        klantChangeMenu.addSubMenu(AdresType.Bezorgadres.getDescription(), displayAdres(AdresType.Bezorgadres), "7");
         klantChangeMenu.addSubMenu("Sortering", String.valueOf(klant.getSortering()), "8");
         klantChangeMenu.addSubMenu("Opslaan", "9");
     }
 
     protected String displayAdres(AdresType adresType) {
-        Adres adres = Misc.getAdresTypeFromList(adresType, klant.getAdresList());
-        if (adres != null) {
-            return displayRecord(adres);
+        for (Adres adres : adresList) {
+            if (adres.getAdresType().equals(adresType)) {
+                return displayRecord(adres);
+            }
         }
         return "";
+
     }
 
 }

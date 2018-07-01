@@ -15,7 +15,7 @@ public class Adres implements Cloneable {
     private String postcode = "";
     private String woonplaats = "";
     private int klantId = 0;
-    private AdresType adresType = AdresType.ADRES_POST;
+    private AdresType adresType = AdresType.Postadres;
 
     /**
      * @return the id

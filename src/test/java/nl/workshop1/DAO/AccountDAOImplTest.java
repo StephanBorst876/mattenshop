@@ -33,7 +33,7 @@ public class AccountDAOImplTest {
     public void setUp() {
         String query = "DELETE FROM account WHERE email = \"stephan@borst.nl\";";
         sqlExecuteStatement.executeStatement(query);
-        query = "INSERT INTO account (email, wachtwoord, account_type) VALUES (\"stephan@borst.nl\", \"stephan\", \"M\");";
+        query = "INSERT INTO account (email, wachtwoord, account_type) VALUES (\"stephan@borst.nl\", \"stephan\", \"Medewerker\");";
         sqlExecuteStatement.executeStatement(query);
     }
 
@@ -55,7 +55,7 @@ public class AccountDAOImplTest {
         Account result = instance.readAccountByUserName(userName);
 
         Account expResult = new Account(userName, "stephan");
-        expResult.setRole(Role.ROLE_MEDEWERKER);
+        expResult.setRole(Role.Medewerker);
         assertEquals(expResult, result);
     }
 
@@ -70,7 +70,7 @@ public class AccountDAOImplTest {
 
         ArrayList<Account> expResult = new ArrayList<>();
         Account account = new Account("stephan@borst.nl", "stephan");
-        account.setRole(Role.ROLE_MEDEWERKER);
+        account.setRole(Role.Medewerker);
         expResult.add(account);
 
         assertEquals(expResult, result);
@@ -92,7 +92,7 @@ public class AccountDAOImplTest {
     @Test
     public void testInsertAccount() {
         Account account = new Account("a", "a");
-        account.setRole(Role.ROLE_KLANT);
+        account.setRole(Role.Admin);
         AccountDAOImpl instance = new AccountDAOImpl();
         instance.insertAccount(account);
     }
@@ -103,7 +103,7 @@ public class AccountDAOImplTest {
     @Test
     public void testUpdateAccount() {
         Account account = new Account("a", "aaaa");
-        account.setRole(Role.ROLE_MEDEWERKER);
+        account.setRole(Role.Medewerker);
         AccountDAOImpl instance = new AccountDAOImpl();
         instance.updateAccount(account);
     }

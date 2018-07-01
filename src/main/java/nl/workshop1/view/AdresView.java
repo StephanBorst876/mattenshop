@@ -1,7 +1,6 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.MenuController;
-import nl.workshop1.menu.AdresChangeMenu;
+import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
 
@@ -9,14 +8,14 @@ import nl.workshop1.model.AdresType;
  *
  * @author FeniksBV
  */
-public class AdresView extends MenuView {
+public class AdresView extends View {
 
     private int adresMode;
-    private AdresChangeMenu adresChangeMenu;
+    private Menu adresChangeMenu;
     private Adres adres;
     private AdresType adresType;
 
-    public AdresView(int mode, AdresType adresType, AdresChangeMenu adresChangeMenu) {
+    public AdresView(int mode, AdresType adresType, Menu adresChangeMenu) {
         super(adresChangeMenu);
         this.adresMode = mode;
         this.adresType = adresType;
@@ -24,7 +23,7 @@ public class AdresView extends MenuView {
         adres = new Adres();
     }
 
-    public AdresView(int mode, AdresType adresType, AdresChangeMenu adresChangeMenu, Adres adres) {
+    public AdresView(int mode, AdresType adresType, Menu adresChangeMenu, Adres adres) {
         super(adresChangeMenu);
         this.adresMode = mode;
         this.adresType = adresType;
@@ -40,8 +39,8 @@ public class AdresView extends MenuView {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (adresMode == MenuController.MODE_NIEUW) {
-            if (adres.getStraatNaam().equals("")) {
+        if (adresMode == Controller.MODE_NIEUW) {
+            if (adres.getStraatNaam().isEmpty()) {
                 // Dit is een nieuw adres, dus alles uitvragen
                 adres.setAdresType(adresType);
                 adres.setStraatNaam(getInputStraatnaam());
@@ -107,7 +106,7 @@ public class AdresView extends MenuView {
 
         adresChangeMenu.addSubMenu("OK", "6");
         // Postadres mag niet worden verwijderd
-        if (adresType != AdresType.ADRES_POST) {
+        if (adresType != AdresType.Postadres) {
             adresChangeMenu.addSubMenu("Verwijderen", "7");
         }
     }

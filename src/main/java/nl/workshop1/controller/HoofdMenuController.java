@@ -1,25 +1,32 @@
 package nl.workshop1.controller;
 
+import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
-import nl.workshop1.menu.HoofdMenu;
+import nl.workshop1.view.Menu;
 import nl.workshop1.view.SimpleMenuView;
 
 /**
  *
  * @author FeniksBV
  */
-public class HoofdMenuController extends MenuController {
+public class HoofdMenuController extends Controller {
 
-    private HoofdMenu hoofdMenu;
+    private Menu hoofdMenu;
     private SimpleMenuView hoofdMenuView;
     private Role role;
+    private Klant klant = null;
 
     public HoofdMenuController(Role role) {
         // Hoofdmenu heeft de Role nodig, omdat dat de opties
         // in het menu bepaald.
         this.role = role;
-        this.hoofdMenu = new HoofdMenu();
+        this.hoofdMenu = new Menu("Hoofdmenu");
         this.hoofdMenuView = new SimpleMenuView(this.hoofdMenu);
+    }
+
+    public HoofdMenuController(Role role, Klant klant) {
+        this(role);
+        this.klant = klant;
     }
 
     @Override
@@ -27,13 +34,13 @@ public class HoofdMenuController extends MenuController {
 
         hoofdMenu.clearSubMenuList();
         hoofdMenu.addSubMenu("Bestellingen", "1");
-        if (role.equals(Role.ROLE_ADMIN) || role.equals(Role.ROLE_MEDEWERKER)) {
+        if (role.equals(Role.Admin) || role.equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Klanten", "2");
         }
-        if (role.equals(Role.ROLE_ADMIN) || role.equals(Role.ROLE_MEDEWERKER)) {
+        if (role.equals(Role.Admin) || role.equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Artikelen", "3");
         }
-        if (role.equals(Role.ROLE_ADMIN)) {
+        if (role.equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Accounts", "4");
         }
 
@@ -42,30 +49,33 @@ public class HoofdMenuController extends MenuController {
             switch (hoofdMenuView.userChoice()) {
                 case "0":
                     // Afsluiten
-                    AfsluitMenuController afsluitCtrl = new AfsluitMenuController();
+                    AfsluitenController afsluitCtrl = new AfsluitenController();
                     afsluitCtrl.runController();
-                    if (afsluitCtrl.getRequestedAction() == "1") {
+                    if (afsluitCtrl.getRequestedAction().equals("1")) {
                         // Oeps. Pas hier op: Alle controllers/menu's geven optie=0 als zijnde
                         // terug, maar de afsluitController geeft 1 als Afsluiten.
                         return;
                     }
+                    break;
                 case "1":
                     // Bestellingen
-                    System.out.println("Bestellingen");
+                    BestellingMenuController bestelMenuCtrl;
+                    bestelMenuCtrl = new BestellingMenuController(klant);
+                    bestelMenuCtrl.runController();
                     break;
                 case "2":
                     // Klanten
-                    KlantMenuController klantMenuCtrl = new KlantMenuController(MenuController.CONTROLLER_MODE_ADMIN);
+                    KlantMenuController klantMenuCtrl = new KlantMenuController(Controller.CONTROLLER_MODE_ADMIN);
                     klantMenuCtrl.runController();
                     break;
                 case "3":
                     // Artikelen
-                    ArtikelMenuController artikelMenuCtrl = new ArtikelMenuController();
+                    MenuController artikelMenuCtrl = new MenuController(TITEL_ARTIKELEN);
                     artikelMenuCtrl.runController();
                     break;
                 case "4":
                     // Accounts
-                    AccountMenuController accountCtrl = new AccountMenuController();
+                    MenuController accountCtrl = new MenuController(TITEL_ACCOUNTS);
                     accountCtrl.runController();
             }
         }

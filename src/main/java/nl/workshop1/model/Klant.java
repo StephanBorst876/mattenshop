@@ -1,20 +1,19 @@
 package nl.workshop1.model;
 
-import java.util.ArrayList;
 import nl.workshop1.utility.Slf4j;
 
 /**
  *
  * @author FeniksBV
  */
-public class Klant implements Cloneable{
+public class Klant implements Cloneable {
 
     private int id = 0;
     private String email = "";
     private String voornaam = "";
     private String achternaam = "";
     private String tussenvoegsel = "";
-    private ArrayList<Adres> adresList = new ArrayList<>();
+    //private ArrayList<Adres> adresList = new ArrayList<>();
     private int sortering = 0;
 
     /**
@@ -105,25 +104,30 @@ public class Klant implements Cloneable{
         StringBuilder s = new StringBuilder();
         // voornaam en achternaam zijn verplichte velden
         s.append(voornaam).append(" ");
-        if (!tussenvoegsel.equals("")) {
+        if (!tussenvoegsel.isEmpty()) {
             s.append(tussenvoegsel).append(" ");
         }
         s.append(achternaam);
         return s.toString();
     }
 
-    public void setAdresList(ArrayList<Adres> adresList) {
-        this.adresList = adresList;
-    }
-    
-    public ArrayList<Adres> getAdresList() {
-        return adresList;
-    }
-    
+//    public void setAdresList(ArrayList<Adres> adresList) {
+//        this.adresList = adresList;
+//    }
+//
+//    public ArrayList<Adres> getAdresList() {
+//        return adresList;
+//    }
+
     @Override
     public Object clone() {
         try {
-            return super.clone();
+            Klant klantClone = (Klant) super.clone();
+//            klantClone.adresList = new ArrayList<>();
+//            for (int i = 0; i < getAdresList().size(); i++) {
+//                klantClone.adresList.add((Adres) getAdresList().get(i).clone());
+//            }
+            return klantClone;
         } catch (CloneNotSupportedException ex) {
             Slf4j.getLogger().error("Cloning Klant exception", ex);
         }

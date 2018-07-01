@@ -1,17 +1,20 @@
 package nl.workshop1.view;
 
-import nl.workshop1.menu.Menu;
-
 /**
  *
  * @author FeniksBV
  */
-public class SimpleMenuView extends MenuView {
+public class SimpleMenuView extends View {
 
-    public <E extends Menu> SimpleMenuView(E menu) {
+    public  SimpleMenuView(Menu menu) {
         super(menu);
     }
 
+    /**
+     *  Straight forward menu without changing menu-options
+     *  All options are fixed-text
+     * @return  selected option
+     */
     @Override
     public String runViewer() {
         while (true) {

@@ -1,30 +1,29 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.MenuController;
-import nl.workshop1.menu.AccountChangeMenu;
+import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Account;
+import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
-import nl.workshop1.utility.Converter;
-import nl.workshop1.utility.Validator;
 
 /**
  *
  * @author FeniksBV
  */
-public class AccountView extends MenuView {
+public class AccountView extends View {
 
     private int accountMode;
-    private AccountChangeMenu accountChangeMenu;
+    private Menu accountChangeMenu;
     private Account account;
+    private Klant klant = null;
 
-    public AccountView(int mode, AccountChangeMenu accountChangeMenu) {
+    public AccountView(int mode, Menu accountChangeMenu) {
         super(accountChangeMenu);
         this.accountMode = mode;
         this.accountChangeMenu = accountChangeMenu;
         account = new Account();
     }
 
-    public AccountView(int mode, AccountChangeMenu accountChangeMenu, Account account) {
+    public AccountView(int mode, Menu accountChangeMenu, Account account) {
         super(accountChangeMenu);
         this.accountMode = mode;
         this.accountChangeMenu = accountChangeMenu;
@@ -35,16 +34,25 @@ public class AccountView extends MenuView {
         return account;
     }
 
+    public void setKlant(Klant klant) {
+        this.klant = klant;
+    }
+
     @Override
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (accountMode == MenuController.MODE_NIEUW) {
-            if (account.getUserName().equals("")) {
+        if (accountMode == Controller.MODE_NIEUW) {
+            if (account.getUserName().isEmpty()) {
                 // Nu weet je zeker dat dit de eerste keer is
                 account.setUserName(getInputUsername(false));
                 account.setWachtwoord(getInputWachtwoord());
                 account.setRole(getInputRole());
+                
+                if (account.getRole() == Role.Klant){
+                    // Forceer dat er een klant wordt gekozen
+                    return "4";
+                }
             }
         }
 
@@ -65,7 +73,7 @@ public class AccountView extends MenuView {
                     account.setRole(getInputRole());
                     break;
                 case "4":
-                    // Klant zoeken
+                    // Klant zoeken, want Role:KLANT gekozen
                     return requestedAction;
                 case "5":
                     // Opslaan
@@ -80,7 +88,7 @@ public class AccountView extends MenuView {
 
     protected void buildSubMenuList() {
         accountChangeMenu.clearSubMenuList();
-        if (accountMode == MenuController.MODE_NIEUW) {
+        if (accountMode == Controller.MODE_NIEUW) {
             // New account may change the userName
             accountChangeMenu.addSubMenu("Username", account.getUserName(), "1");
         } else {
@@ -90,21 +98,17 @@ public class AccountView extends MenuView {
         accountChangeMenu.addSubMenu("Wachtwoord", account.getWachtwoord(), "2");
         accountChangeMenu.addSubMenu("Role", account.getRole().getDescription(), "3");
 
-        if (account.getRole().equals(Role.ROLE_KLANT)) {
-            String klantDisplay = "";
-            if (account.getKlant() != null) {
-                klantDisplay = account.getKlant().getFullName();
+        if (account.getRole() == Role.Klant) {
+            if (klant != null) {
+                accountChangeMenu.addSubMenu("Klant", klant.getFullName(), "4");
+                account.setKlantId(klant.getId());
+                accountChangeMenu.addSubMenu("Opslaan", "5");
+            } else {
+               accountChangeMenu.addSubMenu("Klant", "", "4"); 
             }
-            accountChangeMenu.addSubMenu("Klant", klantDisplay, "4");
         } else {
-            // Always reset when not role=Klant
-            account.setKlant(null);
-        }
-
-        if (Validator.validAccount(account)) {
+            klant = null;
             accountChangeMenu.addSubMenu("Opslaan", "5");
-        } else {
-            OutputText.showError("Bij een role=Klant moet ook een klant zijn gespecificeerd.");
         }
 
     }
@@ -114,7 +118,7 @@ public class AccountView extends MenuView {
             OutputText.showMessage("Role: " + allOptions());
             String s = getInputChoice();
             if (s.length() == 1) {
-                Role role = Converter.stringNaarRole(s);
+                Role role = stringNaarRole(s);
                 if (role != null) {
                     return role;
                 }
@@ -122,13 +126,26 @@ public class AccountView extends MenuView {
         }
     }
 
+    protected Role stringNaarRole(String role) {
+        switch (role) {
+            case "A":
+                return Role.Admin;
+            case "M":
+                return Role.Medewerker;
+            case "K":
+                return Role.Klant;
+            default:
+                return null;
+        }
+    }
+    
     protected String allOptions() {
         StringBuilder str = new StringBuilder();
-        String s = Role.ROLE_ADMIN.getDescription();
+        String s = Role.Admin.getDescription();
         str.append(s.charAt(0)).append('=').append(s).append(",");
-        s = Role.ROLE_MEDEWERKER.getDescription();
+        s = Role.Medewerker.getDescription();
         str.append(s.charAt(0)).append('=').append(s).append(",");
-        s = Role.ROLE_KLANT.getDescription();
+        s = Role.Klant.getDescription();
         str.append(s.charAt(0)).append('=').append(s);
         return str.toString();
     }

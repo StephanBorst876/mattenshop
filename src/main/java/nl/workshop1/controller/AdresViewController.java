@@ -2,23 +2,23 @@ package nl.workshop1.controller;
 
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
-import nl.workshop1.menu.AdresChangeMenu;
 import nl.workshop1.view.AdresView;
+import nl.workshop1.view.Menu;
 
 /**
  *
  * @author FeniksBV
  */
-public class AdresChangeMenuController extends MenuController {
+public class AdresViewController extends Controller {
 
     private AdresView adresView;
     private Adres newAdres = null;
 
-    public AdresChangeMenuController(AdresType adresType, Adres adres) {
+    public AdresViewController(AdresType adresType, Adres adres) {
         if (adres == null) {
-            adresView = new AdresView(MODE_NIEUW, adresType, new AdresChangeMenu(adresType.getDescription() + " toevoegen"));
+            adresView = new AdresView(MODE_NIEUW, adresType, new Menu(adresType.getDescription() + " toevoegen"));
         } else {
-            adresView = new AdresView(MODE_WIJZIG, adresType, new AdresChangeMenu(adresType.getDescription() + " wijzigen"), adres);
+            adresView = new AdresView(MODE_WIJZIG, adresType, new Menu(adresType.getDescription() + " wijzigen"), adres);
         }
     }
 

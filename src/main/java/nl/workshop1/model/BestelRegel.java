@@ -6,7 +6,7 @@ import java.math.BigDecimal;
  *
  * @author FeniksBV
  */
-public class Bestelregel {
+public class BestelRegel {
 
     private int id = 0;
     private int bestellingId = 0;
