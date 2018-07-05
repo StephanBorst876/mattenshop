@@ -3,9 +3,9 @@ package nl.workshop1.controller;
 import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
-import nl.workshop1.model.Role;
 import nl.workshop1.view.AccountView;
 import nl.workshop1.view.Menu;
+import nl.workshop1.view.OutputText;
 
 /**
  *
@@ -16,28 +16,22 @@ public class AccountViewController extends Controller {
     private AccountView accountView;
     private Account initialAccount = null;
 
-    public AccountViewController() {
-        // Een nieuw account
-        accountView = new AccountView(MODE_NIEUW, new Menu("Account toevoegen"));
-    }
-
-    public AccountViewController(Account account) {
-        // bestaand account
-        initialAccount = account;
-        accountView = new AccountView(MODE_WIJZIG, new Menu("Account wijzigen"), account);
+    public AccountViewController(Account account, Klant klant) {
+        String titel;
+        if (account != null) {
+            initialAccount = (Account) account.clone();
+            titel = "Account wijzigen";
+        } else {
+            titel = "Account toevoegen";
+        }
+        accountView = new AccountView(new Menu(titel), account);
+        if (klant != null) {
+            accountView.setKlant(klant);
+        }
     }
 
     @Override
     public void runController() {
-
-        // Indien een bestaand account wijzigen en het betreft een Role.KLANT
-        // dan initialiseren we de klant data
-        if (initialAccount != null) {
-            if (initialAccount.getRole() == Role.Klant) {
-                Klant klant = DAOFactory.getKlantDAO().readKlant(initialAccount.getKlantId());
-                accountView.setKlant(klant);
-            }
-        }
 
         while (true) {
             requestedAction = accountView.runViewer();
@@ -46,9 +40,9 @@ public class AccountViewController extends Controller {
                     return;
                 case "4":
                     // Selecteer een klant
-                    KlantMenuController klantMenuCtrl = new KlantMenuController(Controller.CONTROLLER_MODE_SEARCH);
-                    klantMenuCtrl.runController();
-                    Klant klant = klantMenuCtrl.getKlantSelected();
+                    KlantSearchController klantSearchCtrl = new KlantSearchController();
+                    klantSearchCtrl.runController();
+                    Klant klant = klantSearchCtrl.getKlantSelected();
                     if (klant != null) {
                         accountView.setKlant(klant);
                     }
@@ -56,12 +50,20 @@ public class AccountViewController extends Controller {
                 case "5":
                     // update / insert
                     if (initialAccount == null) {
-                        // Insert
-                        DAOFactory.getAccountDAO().insertAccount(accountView.getAccount());
+                        // Insert, nu ingevoerd account mag nog niet bestaan.
+                        Account account = DAOFactory.getAccountDAO().readAccountByUserName(
+                                accountView.getAccount().getUserName());
+                        if (account == null) {
+                            DAOFactory.getAccountDAO().insertAccount(accountView.getAccount());
+                            return;
+                        } else {
+                            OutputText.showError("Een account met deze username bestaat al! Toevoegen niet toegestaan.");
+                        }
                     } else {
                         DAOFactory.getAccountDAO().updateAccount(accountView.getAccount());
+                        return;
                     }
-                    return;
+                    
 
             }
         }

@@ -7,8 +7,6 @@ package nl.workshop1.model;
 public enum Role {
     Admin("Admin"), Medewerker("Medewerker"), Klant("Klant");
 
-    //    ROLE_ADMIN("Admin"), ROLE_MEDEWERKER("Medewerker"), ROLE_KLANT("Klant");
-    
     private String description;
 
     private Role(String description) {

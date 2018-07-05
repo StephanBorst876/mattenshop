@@ -20,6 +20,11 @@ public class KlantDAOImpl implements KlantDAO {
             + "AND aktief <> 0  "
             + "ORDER BY sortering";
 
+    private final String KLANT_SELECT_EMAIL
+            = "SELECT id,email,voornaam,achternaam,tussenvoegsel,sortering "
+            + "FROM klant "
+            + "WHERE email = ? ";
+    
     private final String KLANT_LIKE
             = "SELECT id,email,voornaam,achternaam,tussenvoegsel,sortering "
             + "FROM klant "
@@ -84,6 +89,17 @@ public class KlantDAOImpl implements KlantDAO {
         ArrayList<Klant> klantList = selectKlant(KLANT_LIKE, "%" + filter + "%", 0);
 
         return klantList;
+    }
+    
+    @Override
+    public Klant readKlantWithEmail(String email) {
+        Slf4j.getLogger().info("readKlant({})", email);
+
+        ArrayList<Klant> klantList = selectKlant(KLANT_SELECT_EMAIL, email, 0);
+        if (klantList.size() == 1) {
+            return klantList.get(0);
+        }
+        return null;
     }
 
     @Override

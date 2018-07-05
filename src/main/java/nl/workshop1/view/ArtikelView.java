@@ -1,6 +1,5 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Artikel;
 
 /**
@@ -9,37 +8,29 @@ import nl.workshop1.model.Artikel;
  */
 public class ArtikelView extends View {
 
-    private int artikelMode;
-    private Menu artikelChangeMenu;
-    private Artikel artikel;
+    private Menu artikelViewMenu;
+    private Artikel artikel = null;
 
-    public ArtikelView(int mode, Menu artikelChangeMenu) {
-        super(artikelChangeMenu);
-        this.artikelMode = mode;
-        this.artikelChangeMenu = artikelChangeMenu;
-        artikel = new Artikel();
-    }
-
-    public ArtikelView(int mode, Menu artikelChangeMenu, Artikel artikel) {
-        super(artikelChangeMenu);
-        this.artikelMode = mode;
-        this.artikelChangeMenu = artikelChangeMenu;
-        this.artikel = (Artikel) artikel.clone();
+    public ArtikelView(Menu artikelViewMenu, Artikel artikel) {
+        super(artikelViewMenu);
+        this.artikelViewMenu = artikelViewMenu;
+        if (artikel == null) {
+            this.artikel = new Artikel();
+        } else {
+            this.artikel = (Artikel) artikel.clone();
+        }
     }
 
     @Override
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (artikelMode == Controller.MODE_NIEUW) {
-            if (artikel.getNaam().isEmpty()) {
-                // Nu weet je zeker dat dit de eerste keer is
-                artikel.setNaam(getInputArtikelnaam());
-                artikel.setPrijs(getInputPrijs());
-                artikel.setVoorraad(getInputPositiveInt("Voorraad"));
-                artikel.setGereserveerd(getInputPositiveInt("Gereserveerd"));
-                artikel.setSortering(getInputSortering());
-            }
+        if (artikel.getNaam() == null) {
+            artikel.setNaam(getInputArtikelnaam());
+            artikel.setPrijs(getInputPrijs());
+            artikel.setVoorraad(getInputPositiveInt("Voorraad",0));
+            artikel.setGereserveerd(getInputPositiveInt("Gereserveerd",0));
+            artikel.setSortering(getInputSortering());
         }
 
         while (true) {
@@ -60,11 +51,11 @@ public class ArtikelView extends View {
                     break;
                 case "3":
                     // Voorraad
-                    artikel.setVoorraad(getInputPositiveInt("Voorraad"));
+                    artikel.setVoorraad(getInputPositiveInt("Voorraad",0));
                     break;
                 case "4":
                     // Gereserveerd
-                    artikel.setGereserveerd(getInputPositiveInt("Gereserveerd"));
+                    artikel.setGereserveerd(getInputPositiveInt("Gereserveerd",0));
                     break;
                 case "5":
                     // Sortering
@@ -78,16 +69,14 @@ public class ArtikelView extends View {
     }
 
     protected void buildSubMenuList() {
-        artikelChangeMenu.clearSubMenuList();
-        artikelChangeMenu.addSubMenu("Artikelnaam", artikel.getNaam(), "1");
-        artikelChangeMenu.addSubMenu("Prijs", artikel.getPrijs().toString(), "2");
-        artikelChangeMenu.addSubMenu("Voorraad", String.valueOf(artikel.getVoorraad()), "3");
-        artikelChangeMenu.addSubMenu("Gereserveerd", String.valueOf(artikel.getGereserveerd()), "4");
-        artikelChangeMenu.addSubMenu("Sortering", String.valueOf(artikel.getSortering()), "5");
-        artikelChangeMenu.addSubMenu("Opslaan", "6");
+        artikelViewMenu.clearSubMenuList();
+        artikelViewMenu.addSubMenu("Artikelnaam", artikel.getNaam(), "1");
+        artikelViewMenu.addSubMenu("Prijs", artikel.getPrijs().toString(), "2");
+        artikelViewMenu.addSubMenu("Voorraad", String.valueOf(artikel.getVoorraad()), "3");
+        artikelViewMenu.addSubMenu("Gereserveerd", String.valueOf(artikel.getGereserveerd()), "4");
+        artikelViewMenu.addSubMenu("Sortering", String.valueOf(artikel.getSortering()), "5");
+        artikelViewMenu.addSubMenu("Opslaan", "6");
     }
-
-    
 
     /**
      * @return the artikel

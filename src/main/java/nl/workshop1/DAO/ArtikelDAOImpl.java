@@ -32,7 +32,15 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
             + "WHERE naam like ? AND aktief <> 0 "
             + "ORDER BY sortering";
+    
+    private final String ARTIKEL_SELECT_NAAM
+            = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
+            + "WHERE naam = ? ";
 
+    private final String ARTIKEL_SELECT_ID
+            = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
+            + "WHERE id = ? ";
+    
     @Override
     public void deleteArtikel(int id) {
         Slf4j.getLogger().info("deleteArtikel({})", id);
@@ -115,9 +123,9 @@ public class ArtikelDAOImpl implements ArtikelDAO {
 
     }
 
-    protected ArrayList<Artikel> selectArtikel(String query, String userName) {
+    protected ArrayList<Artikel> selectArtikel(String query, String arg) {
 
-        Slf4j.getLogger().info(query + " " + userName);
+        Slf4j.getLogger().info(query + " " + arg);
 
         ArrayList<Artikel> artikelList = new ArrayList<>();
 
@@ -126,7 +134,7 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             Connection connObj = DbConnection.getConnection();
             PreparedStatement pstmtObj = connObj.prepareStatement(query);
 
-            pstmtObj.setString(1, userName);
+            pstmtObj.setString(1, arg);
             try (ResultSet resultSet = pstmtObj.executeQuery()) {
                 while (resultSet.next()) {
                     Artikel artikel = new Artikel();
@@ -153,8 +161,70 @@ public class ArtikelDAOImpl implements ArtikelDAO {
 
     @Override
     public ArrayList<Artikel> readArtikelWithFilter(String filter) {
-        ArrayList<Artikel> accountList = selectArtikel(ARTIKEL_LIKE, "%" + filter + "%");
-        return accountList;
+        ArrayList<Artikel> artikelList = selectArtikel(ARTIKEL_LIKE, "%" + filter + "%");
+        return artikelList;
     }
 
+    @Override
+    public Artikel readArtikelByNaam(String naam) {
+        //
+        // Er mogen geen 2 artikele met een gelijke naam in de tabel.
+        //
+        ArrayList<Artikel> artikelList = selectArtikel(ARTIKEL_SELECT_NAAM, naam);
+        if (artikelList.size() == 1) {
+            return artikelList.get(0);
+        }
+        return null;
+    }
+
+    
+    protected ArrayList<Artikel> selectArtikelId(String query, int id) {
+
+        Slf4j.getLogger().info(query + " " + id);
+
+        ArrayList<Artikel> artikelList = new ArrayList<>();
+
+        try {
+
+            Connection connObj = DbConnection.getConnection();
+            PreparedStatement pstmtObj = connObj.prepareStatement(query);
+
+            pstmtObj.setInt(1, id);
+            try (ResultSet resultSet = pstmtObj.executeQuery()) {
+                while (resultSet.next()) {
+                    Artikel artikel = new Artikel();
+                    artikel.setId(resultSet.getInt("id"));
+                    artikel.setNaam(resultSet.getString("naam"));
+
+                    BigDecimal value = new BigDecimal(resultSet.getFloat("prijs"));
+                    artikel.setPrijs(value.setScale(2, RoundingMode.HALF_UP));
+
+                    artikel.setVoorraad(resultSet.getInt("voorraad"));
+                    artikel.setGereserveerd(resultSet.getInt("gereserveerd"));
+                    artikel.setSortering(resultSet.getInt("sortering"));
+
+                    artikelList.add(artikel);
+                }
+            }
+
+        } catch (Exception sqlException) {
+            Slf4j.getLogger().error("SQL exception occurred", sqlException);
+        }
+        return artikelList;
+
+    }
+    
+    @Override
+    public Artikel readArtikelById(int id) {
+        //
+        // Er mogen geen 2 artikele met een gelijke naam in de tabel.
+        //
+        ArrayList<Artikel> artikelList = selectArtikelId(ARTIKEL_SELECT_ID, id);
+        if (artikelList.size() == 1) {
+            return artikelList.get(0);
+        }
+        return null;
+    }
+
+    
 }

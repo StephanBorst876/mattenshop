@@ -25,10 +25,8 @@ public class BestellingDAOImpl implements BestellingDAO {
             + "AND id like ? "
             + "ORDER BY besteldatum DESC ";
 
-    // Er wordt geen fysieke delete gedaan van het bestelling record.
-    // maar de bestelstatus wordt op afgehandeld gezet
     private final String BESTELLING_DELETE
-            = "update bestelling set bestelstatus = \"Afgehandeld\" "
+            = "delete from bestelling "
             + "where id = ?";
 
     private final String BESTELLING_INSERT = "insert into bestelling "
@@ -80,8 +78,8 @@ public class BestellingDAOImpl implements BestellingDAO {
     public ArrayList<Bestelling> readBestellingWithFilter(int klantId, String filter) {
         Slf4j.getLogger().info("readBestellingWithKlantId({} {})", klantId, filter);
 
-        ArrayList<Bestelling> bestellingList = selectBestelling(BESTELLING_LIKE, klantId, 
-                "%" + filter + "%" );
+        ArrayList<Bestelling> bestellingList = selectBestelling(BESTELLING_LIKE, klantId,
+                "%" + filter + "%");
 
         return bestellingList;
     }
@@ -110,7 +108,8 @@ public class BestellingDAOImpl implements BestellingDAO {
 
         try {
             Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_INSERT);
+            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_INSERT,
+                     PreparedStatement.RETURN_GENERATED_KEYS);
 
             pstmtObj.setInt(1, bestelling.getKlantId());
             pstmtObj.setFloat(2, bestelling.getTotaalprijs().floatValue());
@@ -118,6 +117,19 @@ public class BestellingDAOImpl implements BestellingDAO {
             pstmtObj.setString(4, bestelling.getBestelstatus().getDescription());
 
             pstmtObj.execute();
+            
+            // Using the getGeneratedKeys() method to retrieve
+            // the key(s). In this case there is only one key column: klant.id
+            ResultSet keyResultSet = pstmtObj.getGeneratedKeys();
+
+            if (keyResultSet.next()) {
+                int newBestellingId = (int) keyResultSet.getInt(1);
+                // Zojuist gegenereerde id toekennen aan het Bestelling object;
+                // Het kan dan worden gebruikt om aan de te inserten
+                // regels toe tee kennen.
+                bestelling.setId(newBestellingId);
+            }
+            
             Slf4j.getLogger().info("insertBestelling() ended.");
 
         } catch (Exception sqlException) {
@@ -140,8 +152,9 @@ public class BestellingDAOImpl implements BestellingDAO {
             PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_UPDATE);
 
             pstmtObj.setFloat(1, bestelling.getTotaalprijs().floatValue());
-            pstmtObj.setString(2, bestelling.getBestelstatus().getDescription());
+            pstmtObj.setDate(2, getSQLDate(bestelling.getBestelDatum()));
             pstmtObj.setInt(3, bestelling.getId());
+            Slf4j.getLogger().info(pstmtObj.toString());
 
             pstmtObj.execute();
 

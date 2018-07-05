@@ -16,4 +16,9 @@ public interface ArtikelDAO {
     public void updateArtikel(Artikel artikel);
 
     public ArrayList<Artikel> readArtikelWithFilter(String filter);
+
+    public Artikel readArtikelByNaam(String naam);
+
+    public Artikel readArtikelById(int id);
+
 }

@@ -9,7 +9,8 @@ import nl.workshop1.model.BestelRegel;
  */
 public interface BestelRegelDAO {
     
-    public ArrayList<BestelRegel> readRegelsWithBestellingId(int bestellingId);
+    public ArrayList<BestelRegel> readRegelsWithFilter(
+            int bestellingId, String  filter);
     
     public void deleteBestelRegel(int bestelRegelId);
 

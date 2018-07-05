@@ -111,17 +111,18 @@ public abstract class UserInput {
         }
     }
 
-    public int getInputPositiveInt(String text) {
+    public int getInputPositiveInt(String text, int minValue) {
         while (true) {
             try {
                 OutputText.showText(text + " : ");
                 String s = input.nextLine();
                 int positiveInt = Integer.parseInt(s);
 
-                if (positiveInt >= 0 && positiveInt < Integer.MAX_VALUE) {
+                if (positiveInt >= minValue && positiveInt < Integer.MAX_VALUE) {
                     return positiveInt;
                 } else {
-                    OutputText.showError("Specificeer een getal >= 0 en < " + Integer.MAX_VALUE + "\n");
+                    OutputText.showError("Specificeer een getal >= " + minValue + " en < " 
+                            + Integer.MAX_VALUE + "\n");
                 }
             } catch (NumberFormatException ex) {
 

@@ -33,8 +33,8 @@ public class Menu {
     private String title;
     public static String loginName = "";
 
-    // Voor bestellingen, toon de klant en de bestelling
-    private Klant klant = null;
+    // Voor bestellingen, toon de bestelKlant en de bestelling
+    private Klant bestelKlant = null;
     private Bestelling bestelling = null;
 
     // Eventuele records (account/artikel/klant etc) die worden getoond
@@ -101,7 +101,9 @@ public class Menu {
      * Used when ROLE.KLANT
      */
     public void buildSearchOnlySubMenuList() {
-        addSubMenu("Zoek" + buildTextForFilter(), "2");
+        subMenuList.clear();
+        actionList.clear();
+        addSubMenu("Zoek " + buildTextForFilter(), "2");
     }
 
     /**
@@ -111,7 +113,7 @@ public class Menu {
         subMenuList.clear();
         actionList.clear();
         addSubMenu("Nieuw", "1");
-        addSubMenu("Zoek" + buildTextForFilter(), "2");
+        addSubMenu("Zoek " + buildTextForFilter(), "2");
         if (isRecordSelected()) {
             addSubMenu("Wijzig", "3");
             addSubMenu("Verwijder", "4");
@@ -119,20 +121,32 @@ public class Menu {
     }
 
     protected String buildTextForFilter() {
+        StringBuilder s = new StringBuilder();
+        if (title.equals(View.TITEL_ACCOUNTS)) {
+            s.append("(gebruikersnaam)");
+        } else if (title.equals(View.TITEL_KLANTEN)) {
+            s.append("(achternaam)");
+        } else if (title.equals(View.TITEL_ARTIKELEN)) {
+            s.append("(artikelnaam)");
+        } else if (title.equals(View.TITEL_BESTELLINGEN)) {
+            s.append("(referentie)");
+        } else if (title.equals(View.TITEL_BESTELREGELS)) {
+            s.append("(artikelnaam)");
+        }
+
         if (!filter.isEmpty()) {
-            StringBuilder s = new StringBuilder();
             s.append(" <").append(getFilter()).append(">");
             return s.toString();
         }
-        return "";
+        return s.toString();
     }
 
-    public void setKlant(Klant klant) {
-        this.klant = klant;
+    public void setBestelKlant(Klant bestelKlant) {
+        this.bestelKlant = bestelKlant;
     }
 
-    public Klant getKlant() {
-        return klant;
+    public Klant getBestelKlant() {
+        return bestelKlant;
     }
 
     public void setBestelling(Bestelling bestelling) {
@@ -157,11 +171,8 @@ public class Menu {
         this.recordSelected = recordSelected;
     }
 
-    /**
-     * @return the recordSelectedIndex
-     */
-    public int getRecordSelectedIndex() {
-        return recordSelectedIndex;
+    public Object getSelectedObject() {
+        return recordList.get(recordSelectedIndex);
     }
 
     /**

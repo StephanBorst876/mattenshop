@@ -8,13 +8,12 @@ import nl.workshop1.utility.Slf4j;
  */
 public class Klant implements Cloneable {
 
-    private int id = 0;
-    private String email = "";
-    private String voornaam = "";
-    private String achternaam = "";
-    private String tussenvoegsel = "";
-    //private ArrayList<Adres> adresList = new ArrayList<>();
-    private int sortering = 0;
+    private int id;
+    private String email;
+    private String voornaam;
+    private String achternaam;
+    private String tussenvoegsel;
+    private int sortering;
 
     /**
      * @return the id
@@ -110,14 +109,6 @@ public class Klant implements Cloneable {
         s.append(achternaam);
         return s.toString();
     }
-
-//    public void setAdresList(ArrayList<Adres> adresList) {
-//        this.adresList = adresList;
-//    }
-//
-//    public ArrayList<Adres> getAdresList() {
-//        return adresList;
-//    }
 
     @Override
     public Object clone() {

@@ -1,5 +1,14 @@
-use mattenshop;
+-- -----------------------------------------------------
+-- Create user (specified in mysql.xml)
+-- -----------------------------------------------------
+DROP USER IF EXISTS 'kaas'@'localhost';
+CREATE USER 'kaas'@'localhost' IDENTIFIED BY '123Kaas_kaas';
+GRANT ALL PRIVILEGES ON mattenshop.* TO 'kaas'@'localhost' WITH GRANT OPTION;
 
+-- -----------------------------------------------------
+-- Now create the database for the application
+-- -----------------------------------------------------
+use mattenshop;
 
 DELETE FROM account;
 DELETE FROM adres;
@@ -61,11 +70,11 @@ INSERT INTO account (email, wachtwoord, account_type,klant_id) VALUES ("klant@kl
 -- -----------------------------------------------------
 -- Table `mattenshop`.`artikel`
 -- -----------------------------------------------------
-INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (1,"antislipmat", 5, 18, 1 , 3);
-INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (2,"borstelmat", 3.5, 16, 1 , 3);
-INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (3,"grasmat", 7, 35, 1 , 1);
-INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (4,"rubbermat", 2.5, 27, 1 , 2);
-INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (5,"spaghettimat", 8, 20, 1 , 1);
+INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (1,"antislipmat", 5, 100, 10 , 3);
+INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (2,"borstelmat", 3.5, 100, 11 , 3);
+INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (3,"grasmat", 7, 100, 12 , 1);
+INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (4,"rubbermat", 2.5, 100, 13 , 2);
+INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (5,"spaghettimat", 8, 100, 0 , 1);
 
 
 -- -----------------------------------------------------
@@ -74,9 +83,9 @@ INSERT INTO artikel (id,naam,prijs,voorraad,gereserveerd,sortering) VALUES (5,"s
 -- -----------------------------------------------------
 INSERT INTO bestelling (id,klant_id,totaalprijs,besteldatum,bestelstatus) VALUES (1,1,280, now(), "Onderhanden");
 INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (1,1,1,5, 100);
-INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (2,1,2,5, 80);
-INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (3,1,3,5, 60);
-INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (4,1,4,5, 40);
+INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (2,1,2,6, 80);
+INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (3,1,3,7, 60);
+INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (4,1,4,8, 40);
 
 INSERT INTO bestelling (id,klant_id,totaalprijs,besteldatum,bestelstatus) VALUES (2,1,28, "2018-06-28 12:12:12", "Onderhanden");
 INSERT INTO bestel_regel (id,bestelling_id,artikel_id,aantal,prijs) VALUES (5,2,1,5, 10);

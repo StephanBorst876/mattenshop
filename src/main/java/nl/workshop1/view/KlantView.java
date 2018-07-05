@@ -1,7 +1,6 @@
 package nl.workshop1.view;
 
 import java.util.ArrayList;
-import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
 import nl.workshop1.model.Klant;
@@ -12,30 +11,32 @@ import nl.workshop1.model.Klant;
  */
 public class KlantView extends View {
 
-    private int klantMode;
-    private AdresType adresType = null;
-    private Menu klantChangeMenu;
-    private Klant klant;
-    private ArrayList<Adres> adresList = null;
+    private AdresType adresType;
+    private Menu klantViewMenu;
+    private Klant klant = null;
+    private ArrayList<Adres> adresList = new ArrayList<>();
 
-    public KlantView(int mode, Menu klantChangeMenu) {
-        super(klantChangeMenu);
-        this.klantMode = mode;
-        this.klantChangeMenu = klantChangeMenu;
-        klant = new Klant();
-        adresList = new ArrayList<>();
-    }
-
-    public KlantView(int mode, Menu klantChangeMenu, Klant klant, ArrayList<Adres> adresList) {
-        super(klantChangeMenu);
-        this.klantMode = mode;
-        this.klantChangeMenu = klantChangeMenu;
-        this.klant = (Klant) klant.clone();
-        this.adresList = adresList;
+    public KlantView(Menu klantViewMenu, Klant klant, ArrayList<Adres> adresList) {
+        super(klantViewMenu);
+        this.klantViewMenu = klantViewMenu;
+        if (klant == null) {
+            this.klant = new Klant();
+        } else {
+            this.klant = (Klant) klant.clone();
+            this.adresList = adresList;
+        }
     }
 
     public Klant getKlant() {
         return klant;
+    }
+
+    public void setAdresList(ArrayList<Adres> adresList) {
+        this.adresList = adresList;
+    }
+
+    public ArrayList<Adres> getAdresList() {
+        return adresList;
     }
 
     public AdresType getAdresType() {
@@ -46,21 +47,19 @@ public class KlantView extends View {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (klantMode == Controller.MODE_NIEUW) {
-            if (klant.getAchternaam().isEmpty()) {
-                // Nu weet je zeker dat dit de eerste keer is
-                klant.setEmail(getInputUsername(false));
-                klant.setVoornaam(getInputVoornaam());
-                klant.setTussenvoegsel(getInputTussenvoegsel());
-                klant.setAchternaam(getInputAchternaam());
-                klant.setSortering(getInputSortering());
+        if (klant.getAchternaam() == null) {
+            // Nu weet je zeker dat dit de eerste keer is
+            klant.setEmail(getInputUsername(false));
+            klant.setVoornaam(getInputVoornaam());
+            klant.setTussenvoegsel(getInputTussenvoegsel());
+            klant.setAchternaam(getInputAchternaam());
+            klant.setSortering(getInputSortering());
 
-                // Postadres is verplicht, dus ook uitvragen
-                AdresView adresView = new AdresView(klantMode, AdresType.Postadres, null);
-                adresView.runViewer();
+            // Postadres is verplicht, dus ook uitvragen
+            AdresView adresView = new AdresView(AdresType.Postadres, null, null);
+            adresView.runViewer();
 
-                adresList.add(adresView.getAdres());
-            }
+            adresList.add(adresView.getAdres());
         }
 
         while (true) {
@@ -107,17 +106,17 @@ public class KlantView extends View {
     }
 
     protected void buildSubMenuList() {
-        klantChangeMenu.clearSubMenuList();
-        
-        klantChangeMenu.addSubMenu("Email", klant.getEmail(), "1");
-        klantChangeMenu.addSubMenu("Voornaam", klant.getVoornaam(), "2");
-        klantChangeMenu.addSubMenu("Tussenvoegsel", klant.getTussenvoegsel(), "3");
-        klantChangeMenu.addSubMenu("Achternaam", klant.getAchternaam(), "4");
-        klantChangeMenu.addSubMenu(AdresType.Postadres.getDescription(), displayAdres(AdresType.Postadres), "5");
-        klantChangeMenu.addSubMenu(AdresType.Factuuradres.getDescription(), displayAdres(AdresType.Factuuradres), "6");
-        klantChangeMenu.addSubMenu(AdresType.Bezorgadres.getDescription(), displayAdres(AdresType.Bezorgadres), "7");
-        klantChangeMenu.addSubMenu("Sortering", String.valueOf(klant.getSortering()), "8");
-        klantChangeMenu.addSubMenu("Opslaan", "9");
+        klantViewMenu.clearSubMenuList();
+
+        klantViewMenu.addSubMenu("Email", klant.getEmail(), "1");
+        klantViewMenu.addSubMenu("Voornaam", klant.getVoornaam(), "2");
+        klantViewMenu.addSubMenu("Tussenvoegsel", klant.getTussenvoegsel(), "3");
+        klantViewMenu.addSubMenu("Achternaam", klant.getAchternaam(), "4");
+        klantViewMenu.addSubMenu(AdresType.Postadres.getDescription(), displayAdres(AdresType.Postadres), "5");
+        klantViewMenu.addSubMenu(AdresType.Factuuradres.getDescription(), displayAdres(AdresType.Factuuradres), "6");
+        klantViewMenu.addSubMenu(AdresType.Bezorgadres.getDescription(), displayAdres(AdresType.Bezorgadres), "7");
+        klantViewMenu.addSubMenu("Sortering", String.valueOf(klant.getSortering()), "8");
+        klantViewMenu.addSubMenu("Opslaan", "9");
     }
 
     protected String displayAdres(AdresType adresType) {

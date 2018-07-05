@@ -13,6 +13,13 @@ import nl.workshop1.model.Klant;
  */
 public abstract class View extends UserInput {
 
+    // Titels voor de verschillende menu's
+    public static final String TITEL_ACCOUNTS = "Accounts";
+    public static final String TITEL_ARTIKELEN = "Artikelen";
+    public static final String TITEL_KLANTEN = "Klanten";
+    public static final String TITEL_BESTELLINGEN = "Bestellingen";
+    public static final String TITEL_BESTELREGELS = "Bestellingregels";
+    
     private static final int NUMBER_RECORDS_TO_DISPLAY = 5;
 
     private Menu menu;
@@ -22,6 +29,10 @@ public abstract class View extends UserInput {
     }
 
     public abstract String runViewer();
+
+    public Menu getMenu() {
+        return menu;
+    }
 
     public void setMenu(Menu menu) {
         this.menu = menu;
@@ -40,24 +51,25 @@ public abstract class View extends UserInput {
             }
         }
 
-        if (menu.getKlant() != null) {
+        if (menu.getBestelKlant() != null) {
             // Alleen wanneer we in bestellingen zitten
-            OutputText.showMessage("Huidige klant      : " + menu.getKlant().getFullName());
+            OutputText.showMessage("Huidige klant      : " + menu.getBestelKlant().getFullName());
         }
         if (menu.getBestelling() != null) {
             OutputText.showMessage("Huidige bestelling : " + menu.getBestelling().getBestelDatum());
         }
 
         if (menu.isRecordSelected()) {
-            OutputText.showMessage(" -> " + displayRecord(menu.getRecordList().get(menu.getRecordSelectedIndex())));
+            // display the header
+            OutputText.showRecordHeader(formatTextHeader(menu.getSelectedObject()));
+            OutputText.showMessage("  -> " + displayRecord(menu.getSelectedObject()));
             OutputText.showMessage("");
         } else {
             for (int i = 0; i < menu.getRecordList().size(); i++) {
                 if (i == 0) {
-                    // First display the header
+                    // display the header
                     OutputText.showRecordHeader(formatTextHeader(menu.getRecordList().get(0)));
                 }
-
                 if (i < NUMBER_RECORDS_TO_DISPLAY) {
                     OutputText.showMessage(generateChoice('A', i) + displayRecord(menu.getRecordList().get(i)));
                 } else {
@@ -96,7 +108,7 @@ public abstract class View extends UserInput {
         } else if (obj instanceof Bestelling) {
             return String.format("     %-11s%-30s%10s %-30s", "Referentie", "Besteldatum", "Totaal", "Bestelstatus");
         } else if (obj instanceof BestelRegel) {
-            return String.format("     %-20s%-30s%-30s%-10s", "Regel", "Volledige naam", "Email", "Sortering");
+            return String.format("     %-30s%10s%10s", "Artikelnaam", "Aantal", "Prijs");
         }
         return "";
     }
@@ -124,7 +136,8 @@ public abstract class View extends UserInput {
                     bestelling.getBestelstatus());
         } else if (obj instanceof BestelRegel) {
             BestelRegel bestelRegel = (BestelRegel) obj;
-            return String.format("%d", bestelRegel.getId());
+            return String.format("%-30s%10d%10.2f", bestelRegel.getArtikelNaam(),
+                    bestelRegel.getAantal(), bestelRegel.getPrijs());
         }
         return "";
     }
@@ -192,10 +205,6 @@ public abstract class View extends UserInput {
         }
 
         return null;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
 }

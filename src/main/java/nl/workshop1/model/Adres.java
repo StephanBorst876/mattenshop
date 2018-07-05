@@ -8,14 +8,14 @@ import nl.workshop1.utility.Slf4j;
  */
 public class Adres implements Cloneable {
 
-    private int id = 0;
-    private String straatNaam = "";
-    private int huisNummer = 0;
-    private String toevoeging = "";
-    private String postcode = "";
-    private String woonplaats = "";
-    private int klantId = 0;
-    private AdresType adresType = AdresType.Postadres;
+    private int id;
+    private String straatNaam;
+    private int huisNummer;
+    private String toevoeging;
+    private String postcode;
+    private String woonplaats;
+    private int klantId;
+    private AdresType adresType;
 
     /**
      * @return the id

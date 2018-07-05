@@ -1,6 +1,5 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
@@ -11,23 +10,25 @@ import nl.workshop1.model.Role;
  */
 public class AccountView extends View {
 
-    private int accountMode;
-    private Menu accountChangeMenu;
-    private Account account;
+    private Menu accountViewMenu;
+    private Account initialAccount = null;
+    private Account account = null;
     private Klant klant = null;
 
-    public AccountView(int mode, Menu accountChangeMenu) {
-        super(accountChangeMenu);
-        this.accountMode = mode;
-        this.accountChangeMenu = accountChangeMenu;
-        account = new Account();
-    }
-
-    public AccountView(int mode, Menu accountChangeMenu, Account account) {
-        super(accountChangeMenu);
-        this.accountMode = mode;
-        this.accountChangeMenu = accountChangeMenu;
-        this.account = (Account) account.clone();
+    /**
+     *
+     * @param accountViewMenu
+     * @param account
+     */
+    public AccountView(Menu accountViewMenu, Account account) {
+        super(accountViewMenu);
+        this.accountViewMenu = accountViewMenu;
+        if (account == null) {
+            this.account = new Account();
+        } else {
+            this.account = (Account) account.clone();
+            initialAccount = (Account) account.clone();
+        }
     }
 
     public Account getAccount() {
@@ -42,17 +43,15 @@ public class AccountView extends View {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (accountMode == Controller.MODE_NIEUW) {
-            if (account.getUserName().isEmpty()) {
-                // Nu weet je zeker dat dit de eerste keer is
-                account.setUserName(getInputUsername(false));
-                account.setWachtwoord(getInputWachtwoord());
-                account.setRole(getInputRole());
-                
-                if (account.getRole() == Role.Klant){
-                    // Forceer dat er een klant wordt gekozen
-                    return "4";
-                }
+        if (account.getUserName().isEmpty()) {
+            // Nu weet je zeker dat dit de eerste keer is
+            account.setUserName(getInputUsername(false));
+            account.setWachtwoord(getInputWachtwoord());
+            account.setRole(getInputRole());
+
+            if (account.getRole() == Role.Klant) {
+                // Forceer dat er een klant wordt gekozen
+                return "4";
             }
         }
 
@@ -87,38 +86,38 @@ public class AccountView extends View {
     }
 
     protected void buildSubMenuList() {
-        accountChangeMenu.clearSubMenuList();
-        if (accountMode == Controller.MODE_NIEUW) {
+        accountViewMenu.clearSubMenuList();
+        if (initialAccount == null) {
             // New account may change the userName
-            accountChangeMenu.addSubMenu("Username", account.getUserName(), "1");
+            accountViewMenu.addSubMenu("Username", account.getUserName(), "1");
         } else {
             // Modifying an account, username is not allowed to change
-            accountChangeMenu.addSubMenu("Username", account.getUserName(), "99");
+            accountViewMenu.addSubMenu("Username", account.getUserName(), "99");
         }
-        accountChangeMenu.addSubMenu("Wachtwoord", account.getWachtwoord(), "2");
-        accountChangeMenu.addSubMenu("Role", account.getRole().getDescription(), "3");
+        accountViewMenu.addSubMenu("Wachtwoord", account.getWachtwoord(), "2");
+        accountViewMenu.addSubMenu("Role", account.getRole().getDescription(), "3");
 
         if (account.getRole() == Role.Klant) {
             if (klant != null) {
-                accountChangeMenu.addSubMenu("Klant", klant.getFullName(), "4");
+                accountViewMenu.addSubMenu("Klant", klant.getFullName(), "4");
                 account.setKlantId(klant.getId());
-                accountChangeMenu.addSubMenu("Opslaan", "5");
+                accountViewMenu.addSubMenu("Opslaan", "5");
             } else {
-               accountChangeMenu.addSubMenu("Klant", "", "4"); 
+                accountViewMenu.addSubMenu("Klant", "", "4");
             }
         } else {
             klant = null;
-            accountChangeMenu.addSubMenu("Opslaan", "5");
+            accountViewMenu.addSubMenu("Opslaan", "5");
         }
 
     }
 
-    public Role getInputRole() {
+    protected Role getInputRole() {
         while (true) {
-            OutputText.showMessage("Role: " + allOptions());
+            OutputText.showMessage("Role: " + allRoleOptions());
             String s = getInputChoice();
-            if (s.length() == 1) {
-                Role role = stringNaarRole(s);
+            if (s.length() >= 1) {
+                Role role = charNaarRole(s.charAt(0));
                 if (role != null) {
                     return role;
                 }
@@ -126,20 +125,20 @@ public class AccountView extends View {
         }
     }
 
-    protected Role stringNaarRole(String role) {
+    protected Role charNaarRole(char role) {
         switch (role) {
-            case "A":
+            case 'A':
                 return Role.Admin;
-            case "M":
+            case 'M':
                 return Role.Medewerker;
-            case "K":
+            case 'K':
                 return Role.Klant;
             default:
                 return null;
         }
     }
-    
-    protected String allOptions() {
+
+    protected String allRoleOptions() {
         StringBuilder str = new StringBuilder();
         String s = Role.Admin.getDescription();
         str.append(s.charAt(0)).append('=').append(s).append(",");

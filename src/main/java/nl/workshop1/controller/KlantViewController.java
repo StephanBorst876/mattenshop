@@ -7,6 +7,7 @@ import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
 import nl.workshop1.view.KlantView;
 import nl.workshop1.view.Menu;
+import nl.workshop1.view.OutputText;
 
 /**
  *
@@ -19,19 +20,19 @@ public class KlantViewController extends Controller {
     private ArrayList<Adres> initialAdresList = new ArrayList<>();
     private ArrayList<Adres> adresList = new ArrayList<>();
 
-    public KlantViewController() {
-        // Een nieuwe klant
-        klantView = new KlantView(MODE_NIEUW, new Menu("Klant toevoegen"));
-    }
-
     public KlantViewController(Klant klant, ArrayList<Adres> adresList) {
-        // bestaande klant
-        this.adresList = adresList;
-        this.klant = klant;
-        for (int i = 0; i < adresList.size(); i++) {
-            initialAdresList.add((Adres) adresList.get(i).clone());
+        String titel;
+        if (klant == null) {
+            titel = "Klant toevoegen";
+        } else {
+            titel = "Klant wijzigen";
+            this.klant = klant;
+            this.adresList = adresList;
+            for (int i = 0; i < adresList.size(); i++) {
+                initialAdresList.add((Adres) adresList.get(i).clone());
+            }
         }
-        klantView = new KlantView(MODE_WIJZIG, new Menu("Klant wijzigen"), klant, adresList);
+        klantView = new KlantView(new Menu(titel), klant, adresList);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class KlantViewController extends Controller {
                     // bezorgadres
                     // Bovenstaande 3 opties kunnen we in een enkele afhandelen
                     // Een adres invoeren of wijzigen gaat via de AdresController.
-
+                    adresList = klantView.getAdresList();
                     Adres adres = getAdresFromList(klantView.getAdresType(), adresList);
                     AdresViewController adresCtrl = new AdresViewController(klantView.getAdresType(), adres);
                     adresCtrl.runController();
@@ -64,21 +65,33 @@ public class KlantViewController extends Controller {
                             // Adres verwijderen -> verwijder adresType uit bestaande lijst
                             Adres newAdres = adresCtrl.getAdres();
                             updateAdresList(klantView.getAdresType(), newAdres);
+                            klantView.setAdresList(adresList);
                             break;
                     }
                     break;
                 case "9":
                     // update / insert
+                    Boolean klantAangepast = true;
+                    adresList = klantView.getAdresList();
                     if (klant == null) {
-                        DAOFactory.getKlantDAO().insertKlant(klantView.getKlant());
+                        Klant klant = DAOFactory.getKlantDAO().readKlantWithEmail(klantView.getKlant().getEmail());
+                        if (klant == null) {
+                            DAOFactory.getKlantDAO().insertKlant(klantView.getKlant());
+                        } else {
+                            OutputText.showError("Een klant met dit email bestaat al! Toevoegen niet toegestaan.");
+                            klantAangepast = false;
+                        }
                     } else {
                         DAOFactory.getKlantDAO().updateKlant(klantView.getKlant());
                     }
-                    // Adressen bijwerken
-                    AdresBijwerkenInDB(AdresType.Postadres, adresList);
-                    AdresBijwerkenInDB(AdresType.Factuuradres, adresList);
-                    AdresBijwerkenInDB(AdresType.Bezorgadres, adresList);
-                    return;
+
+                    if (klantAangepast) {
+                        // Adressen bijwerken
+                        AdresBijwerkenInDB(AdresType.Postadres, adresList);
+                        AdresBijwerkenInDB(AdresType.Factuuradres, adresList);
+                        AdresBijwerkenInDB(AdresType.Bezorgadres, adresList);
+                        return;
+                    }
 
             }
         }

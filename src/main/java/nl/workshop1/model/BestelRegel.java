@@ -1,18 +1,20 @@
 package nl.workshop1.model;
 
 import java.math.BigDecimal;
+import nl.workshop1.utility.Slf4j;
 
 /**
  *
  * @author FeniksBV
  */
-public class BestelRegel {
+public class BestelRegel implements Cloneable{
 
-    private int id = 0;
-    private int bestellingId = 0;
-    private int artikelId = 0;
-    private int aantal = 0;
-    private BigDecimal prijs = new BigDecimal(0);
+    private int id;
+    private int bestellingId;
+    private int artikelId;
+    private String artikelNaam;
+    private int aantal;
+    private BigDecimal prijs;
 
     /**
      * @return the id
@@ -52,7 +54,7 @@ public class BestelRegel {
     /**
      * @param artikel the artikel to set
      */
-    public void setArtikel(int artikelId) {
+    public void setArtikelId(int artikelId) {
         this.artikelId = artikelId;
     }
 
@@ -84,5 +86,28 @@ public class BestelRegel {
         this.prijs = prijs;
     }
 
+    /**
+     * @return the artikelNaam
+     */
+    public String getArtikelNaam() {
+        return artikelNaam;
+    }
+
+    /**
+     * @param artikelNaam the artikelNaam to set
+     */
+    public void setArtikelNaam(String artikelNaam) {
+        this.artikelNaam = artikelNaam;
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return (BestelRegel) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Slf4j.getLogger().error("Cloning BestelRegel exception", ex);
+        }
+        return null;
+    }
     
 }

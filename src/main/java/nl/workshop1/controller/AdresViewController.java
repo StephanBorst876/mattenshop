@@ -15,11 +15,14 @@ public class AdresViewController extends Controller {
     private Adres newAdres = null;
 
     public AdresViewController(AdresType adresType, Adres adres) {
+        String titel;
         if (adres == null) {
-            adresView = new AdresView(MODE_NIEUW, adresType, new Menu(adresType.getDescription() + " toevoegen"));
+            titel = adresType.getDescription() + " toevoegen";
         } else {
-            adresView = new AdresView(MODE_WIJZIG, adresType, new Menu(adresType.getDescription() + " wijzigen"), adres);
+            titel = adresType.getDescription() + " wijzigen";
+            newAdres = (Adres) adres.clone();
         }
+        adresView = new AdresView(adresType, new Menu(titel), newAdres);
     }
 
     public Adres getAdres() {

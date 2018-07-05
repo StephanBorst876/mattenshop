@@ -1,6 +1,5 @@
 package nl.workshop1.view;
 
-import nl.workshop1.controller.Controller;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.AdresType;
 
@@ -10,25 +9,20 @@ import nl.workshop1.model.AdresType;
  */
 public class AdresView extends View {
 
-    private int adresMode;
-    private Menu adresChangeMenu;
+    private Menu adresViewMenu;
     private Adres adres;
     private AdresType adresType;
 
-    public AdresView(int mode, AdresType adresType, Menu adresChangeMenu) {
-        super(adresChangeMenu);
-        this.adresMode = mode;
+    public AdresView(AdresType adresType, Menu adresViewMenu, Adres adres) {
+        super(adresViewMenu);
         this.adresType = adresType;
-        this.adresChangeMenu = adresChangeMenu;
-        adres = new Adres();
-    }
-
-    public AdresView(int mode, AdresType adresType, Menu adresChangeMenu, Adres adres) {
-        super(adresChangeMenu);
-        this.adresMode = mode;
-        this.adresType = adresType;
-        this.adresChangeMenu = adresChangeMenu;
-        this.adres = (Adres) adres.clone();
+        this.adresViewMenu = adresViewMenu;
+        if (adres == null) {
+            this.adres = new Adres();
+            this.adres.setAdresType(adresType);
+        } else {
+            this.adres = (Adres) adres.clone();
+        }
     }
 
     public Adres getAdres() {
@@ -39,21 +33,19 @@ public class AdresView extends View {
     public String runViewer() {
 
         // Initially ask for input all datafields
-        if (adresMode == Controller.MODE_NIEUW) {
-            if (adres.getStraatNaam().isEmpty()) {
-                // Dit is een nieuw adres, dus alles uitvragen
-                adres.setAdresType(adresType);
-                adres.setStraatNaam(getInputStraatnaam());
-                adres.setHuisNummer(getInputHuisnummer());
-                adres.setToevoeging(getInputToevoeging());
-                adres.setPostcode(getInputPostcode());
-                adres.setWoonplaats(getInputWoonplaats());
-            }
-            if (adresChangeMenu == null) {
-                // Aangeroepen vanuit nieuwe klant invoeren.
-                // Die kijkt niet naar de return-waarde.
-                return "";
-            }
+        if (adres.getStraatNaam() == null) {
+            // Dit is een nieuw adres, dus alles uitvragen
+            adres.setAdresType(adresType);
+            adres.setStraatNaam(getInputStraatnaam());
+            adres.setHuisNummer(getInputHuisnummer());
+            adres.setToevoeging(getInputToevoeging());
+            adres.setPostcode(getInputPostcode());
+            adres.setWoonplaats(getInputWoonplaats());
+        }
+        if (adresViewMenu == null) {
+            // Aangeroepen vanuit nieuwe klant invoeren.
+            // Die kijkt niet naar de return-waarde.
+            return "";
         }
 
         while (true) {
@@ -84,7 +76,7 @@ public class AdresView extends View {
                     adres.setWoonplaats(getInputWoonplaats());
                     break;
                 case "6":
-                    // opslaan
+                    // ok
                     return requestedAction;
                 case "7":
                     // verwijderen
@@ -96,18 +88,18 @@ public class AdresView extends View {
     }
 
     protected void buildSubMenuList() {
-        adresChangeMenu.clearSubMenuList();
+        adresViewMenu.clearSubMenuList();
 
-        adresChangeMenu.addSubMenu("Straatnaam", adres.getStraatNaam(), "1");
-        adresChangeMenu.addSubMenu("Huisnummer", String.valueOf(adres.getHuisNummer()), "2");
-        adresChangeMenu.addSubMenu("Toevoeging", adres.getToevoeging(), "3");
-        adresChangeMenu.addSubMenu("postcode", adres.getPostcode(), "4");
-        adresChangeMenu.addSubMenu("Woonplaats", adres.getWoonplaats(), "5");
+        adresViewMenu.addSubMenu("Straatnaam", adres.getStraatNaam(), "1");
+        adresViewMenu.addSubMenu("Huisnummer", String.valueOf(adres.getHuisNummer()), "2");
+        adresViewMenu.addSubMenu("Toevoeging", adres.getToevoeging(), "3");
+        adresViewMenu.addSubMenu("postcode", adres.getPostcode(), "4");
+        adresViewMenu.addSubMenu("Woonplaats", adres.getWoonplaats(), "5");
 
-        adresChangeMenu.addSubMenu("OK", "6");
+        adresViewMenu.addSubMenu("OK", "6");
         // Postadres mag niet worden verwijderd
         if (adresType != AdresType.Postadres) {
-            adresChangeMenu.addSubMenu("Verwijderen", "7");
+            adresViewMenu.addSubMenu("Verwijderen", "7");
         }
     }
 

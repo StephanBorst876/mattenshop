@@ -7,14 +7,15 @@ import nl.workshop1.utility.Slf4j;
  *
  * @author FeniksBV
  */
-public class Artikel implements Cloneable{
-  private int id = 0;
-  private String naam = "";
-  private BigDecimal prijs = new BigDecimal(0);
-  private int voorraad = 0;
-  private int gereserveerd = 0;
-  private int sortering = 0;
-  private boolean aktief = true;
+public class Artikel implements Cloneable {
+
+    private int id;
+    private String naam;
+    private BigDecimal prijs;
+    private int voorraad;
+    private int gereserveerd;
+    private int sortering;
+    private boolean aktief;
 
     /**
      * @return the id
@@ -113,7 +114,7 @@ public class Artikel implements Cloneable{
     public void setAktief(boolean aktief) {
         this.aktief = aktief;
     }
-  
+
     @Override
     public Object clone() {
         try {
@@ -123,5 +124,5 @@ public class Artikel implements Cloneable{
         }
         return null;
     }
-  
+
 }

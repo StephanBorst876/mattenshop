@@ -8,10 +8,12 @@ import nl.workshop1.model.Klant;
  * @author FeniksBV
  */
 public interface KlantDAO {
-  
+
     public ArrayList<Klant> readKlantWithFilter(String filter);
-    
+
     public Klant readKlant(int id);
+
+    public Klant readKlantWithEmail(String email);
 
     public void deleteKlant(int id);
 

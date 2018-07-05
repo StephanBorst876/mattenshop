@@ -21,7 +21,10 @@ public class AfsluitenController extends Controller {
     public void runController() {
         afsluitMenu.clearSubMenuList();
         afsluitMenu.addSubMenu("Afsluiten", "1");
-        requestedAction = afsluitMenuView.runViewer();
+        // TODO: automatisch afsluiten
+        requestedAction = "1";
+        return;
+//        requestedAction = afsluitMenuView.runViewer();
     }
 
 }

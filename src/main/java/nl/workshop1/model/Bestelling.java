@@ -8,11 +8,11 @@ import java.util.Date;
  * @author FeniksBV
  */
 public class Bestelling {
-    private int id = 0;
-    private int klantId = 0;
-    private BigDecimal totaalprijs = new BigDecimal(0);
-    private Date bestelDatum = new Date();
-    private Bestelstatus bestelstatus = Bestelstatus.Onderhanden;
+    private int id;
+    private int klantId;
+    private BigDecimal totaalprijs;
+    private Date bestelDatum;
+    private Bestelstatus bestelstatus;
 
     /**
      * @return the id
