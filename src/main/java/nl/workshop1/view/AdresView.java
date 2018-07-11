@@ -101,6 +101,7 @@ public class AdresView extends View {
         if (adresType != AdresType.Postadres) {
             adresViewMenu.addSubMenu("Verwijderen", "7");
         }
+        adresViewMenu.addSubMenu("Terug", "0");
     }
 
 }

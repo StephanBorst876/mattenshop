@@ -29,6 +29,18 @@ Maak uw keuze :
  */
 public class Menu {
 
+    // Titels voor de verschillende menu's
+    public static final String TITEL_HOOFDMENU = "Hoofdmenu";
+    public static final String TITEL_INLOGGEN = "Inloggen";
+    public static final String TITEL_DB_SELECTIE = "Database selectie";
+    public static final String TITEL_ACCOUNTS = "Accounts";
+    public static final String TITEL_ARTIKELEN = "Artikelen";
+    public static final String TITEL_KLANTEN = "Klanten";
+    public static final String TITEL_BESTELLINGEN = "Bestellingen";
+    public static final String TITEL_BESTELREGELS = "Bestellingregels";
+    public static final String TITEL_ZOEK_ARTIKELEN = "Zoek artikelen";
+    public static final String TITEL_ZOEK_KLANTEN = "Zoek klanten";
+    
     // Titel van het menu
     private String title;
     public static String loginName = "";
@@ -47,6 +59,7 @@ public class Menu {
     private ArrayList<String> actionList = null;
 
     private String filter = "";
+    private String infoLine = "";
 
     public Menu(String title) {
         this.title = title;
@@ -104,6 +117,7 @@ public class Menu {
         subMenuList.clear();
         actionList.clear();
         addSubMenu("Zoek " + buildTextForFilter(), "2");
+        addSubMenu("Terug", "0");
     }
 
     /**
@@ -118,19 +132,20 @@ public class Menu {
             addSubMenu("Wijzig", "3");
             addSubMenu("Verwijder", "4");
         }
+        addSubMenu("Terug", "0");
     }
 
     protected String buildTextForFilter() {
         StringBuilder s = new StringBuilder();
-        if (title.equals(View.TITEL_ACCOUNTS)) {
+        if (title.equals(Menu.TITEL_ACCOUNTS)) {
             s.append("(gebruikersnaam)");
-        } else if (title.equals(View.TITEL_KLANTEN)) {
+        } else if ((title.equals(Menu.TITEL_KLANTEN)) || (title.equals(Menu.TITEL_ZOEK_KLANTEN))) {
             s.append("(achternaam)");
-        } else if (title.equals(View.TITEL_ARTIKELEN)) {
+        } else if ((title.equals(Menu.TITEL_ARTIKELEN)) || (title.equals(Menu.TITEL_ZOEK_ARTIKELEN))) {
             s.append("(artikelnaam)");
-        } else if (title.equals(View.TITEL_BESTELLINGEN)) {
+        } else if (title.equals(Menu.TITEL_BESTELLINGEN)) {
             s.append("(referentie)");
-        } else if (title.equals(View.TITEL_BESTELREGELS)) {
+        } else if (title.equals(Menu.TITEL_BESTELREGELS)) {
             s.append("(artikelnaam)");
         }
 
@@ -229,6 +244,20 @@ public class Menu {
      */
     public ArrayList<String> getActionList() {
         return actionList;
+    }
+
+    /**
+     * @return the infoLine
+     */
+    public String getInfoLine() {
+        return infoLine;
+    }
+
+    /**
+     * @param infoLine the infoLine to set
+     */
+    public void setInfoLine(String infoLine) {
+        this.infoLine = infoLine;
     }
 
 }

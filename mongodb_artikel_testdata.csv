@@ -1,0 +1,6 @@
+id,naam,prijs,voorraad,gereserveerd,sortering
+1,antislipmat, 5.00, 100, 10 , 3
+2,borstelmat, 3.50, 100, 11 , 3
+3,grasmat, 7.00, 100, 12 , 1
+4,rubbermat, 2.50, 100, 13 , 2
+5,spaghettimat, 8.00, 100, 0 , 1

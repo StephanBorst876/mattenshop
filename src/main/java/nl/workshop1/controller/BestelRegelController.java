@@ -13,13 +13,13 @@ import nl.workshop1.view.Menu;
  *
  * @author FeniksBV
  */
-public class BestelRegelViewController extends Controller {
+public class BestelRegelController extends Controller {
 
     private Bestelling bestelling = null;
     private BestelRegel bestelRegel;
     private BestelRegelView bestelRegelView;
 
-    public BestelRegelViewController(Bestelling bestelling, BestelRegel bestelRegel) {
+    public BestelRegelController(Bestelling bestelling, BestelRegel bestelRegel) {
 
         this.bestelling = bestelling;
         this.bestelRegel = bestelRegel;
@@ -90,12 +90,14 @@ public class BestelRegelViewController extends Controller {
                             bestelRegelList.set(i, bestelRegel);
                             gewijzigd = true;
                         }
-                        totaalPrijs = totaalPrijs.add(bestelRegelList.get(i).getPrijs());
+                        BigDecimal aantalArtikel = new BigDecimal(bestelRegelList.get(i).getAantal());
+                        totaalPrijs = totaalPrijs.add(bestelRegelList.get(i).getPrijs().multiply(aantalArtikel));
                     }
 
                     if (!gewijzigd) {
                         // blijkbaar een nieuwe bestelregel ingevoerd
-                        totaalPrijs = totaalPrijs.add(bestelRegel.getPrijs());
+                        BigDecimal aantalArtikel = new BigDecimal(bestelRegel.getAantal());
+                        totaalPrijs = totaalPrijs.add(bestelRegel.getPrijs().multiply(aantalArtikel));
                     }
                     bestelling.setTotaalprijs(totaalPrijs);
 

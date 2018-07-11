@@ -1,26 +1,12 @@
-- Enums aangepast naar betere communicatie JAVA<->MySql
-(wel database opnieuw opbouwen en testdata inlezen)
+- MongoDb toegevoegd.
+run_mongodb_testdata.bat om testdata te laden in MongoDb.
+Geen bestellingen/bestelregels (problemen met Date format!).
 
-- Een docx die de structuur van het programma beschrijft.
+- MongoDb initialisatie met XML ? User authorisation ?
 
-- Alle classNames <model>ViewController zou ik nog kunnen hernoemen
-naar <model>Controller. Wellicht dat die naamgeving beter aansluit
-bij andermans verweachting.
-
-- In hoeverre zou je 'stukjes' identieke code in classes/methodes
-moeten zetten? Bijv. in KlantSearchController en in MenuController
-wordt beide keren de DAOFactory.getKlantDAO().readKlantWithFilter()
-gebruikt om een lijst op te bouwen.
-
-- Idem: In welke class zou je nu het best de private static String TITEL_*
-kunnen plaatsen?
-
-- Stel je zit in een View (bestelregel) en je wilt een ander view
-aanroepen (zoeken naar artikel). Mag je vanuit de ene view de andere
-view aanroepen?
+- Keuze voor database wordt nu vanuit MainController doorgegeven aan DbConnection
+Mag dat aan DAOFactory ? 
+- Algemeen: wat ie een geijkte manier van dit soort keuzes afhandelen, hoe?
 
 - Mockito? Moet ik nog verder induiken.
-
-- Zorgen->structuur? Ja, heb ik ook, maar wordt aan gewerkt.
-Single responsibility, idem voor methodes -> heeft mijn aandacht!
 

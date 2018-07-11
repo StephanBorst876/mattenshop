@@ -1,0 +1,8 @@
+id,email,voornaam,achternaam,tussenvoegsel,sortering
+1,klant1@klant.nl,Jan,Klant1,,3
+2,klant2@klant.nl, Kees, Klant2,, 3
+3,klant3@klant.nl, Marije, Klant3,, 3
+4,klant4@klant.nl, Jolien, Klant4,, 3
+5,boer@piet.nl, piet, boer, de , 1
+6,stephan@borst.nl, Stephan, Borst,, 2
+7,tom@devos.nl, Tom, Vos, de , 2

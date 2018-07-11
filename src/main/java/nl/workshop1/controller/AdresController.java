@@ -9,12 +9,12 @@ import nl.workshop1.view.Menu;
  *
  * @author FeniksBV
  */
-public class AdresViewController extends Controller {
+public class AdresController extends Controller {
 
     private AdresView adresView;
     private Adres newAdres = null;
 
-    public AdresViewController(AdresType adresType, Adres adres) {
+    public AdresController(AdresType adresType, Adres adres) {
         String titel;
         if (adres == null) {
             titel = adresType.getDescription() + " toevoegen";

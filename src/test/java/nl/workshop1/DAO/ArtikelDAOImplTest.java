@@ -63,7 +63,7 @@ public class ArtikelDAOImplTest {
         artikel.setGereserveerd(0);
         artikel.setSortering(0);
         ArtikelDAOImpl instance = new ArtikelDAOImpl();
-        overallArtikelId = instance.insertArtikel(artikel);
+        instance.insertArtikel(artikel);
 //        assertEquals(expResult, result);
     }
 

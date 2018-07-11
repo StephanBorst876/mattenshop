@@ -64,7 +64,7 @@ INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id
 -- -----------------------------------------------------
 INSERT INTO account (email, wachtwoord, account_type) VALUES ("boer@piet.nl", "piet", "Admin");
 INSERT INTO account (email, wachtwoord, account_type) VALUES ("stephan@borst.nl", "stephan", "Medewerker");
-INSERT INTO account (email, wachtwoord, account_type,klant_id) VALUES ("klant@klant.nl", "klant", "Klant", 1);
+INSERT INTO account (email, wachtwoord, account_type,klant_id) VALUES ("klant1@klant.nl", "klant1", "Klant", 1);
 
 
 -- -----------------------------------------------------

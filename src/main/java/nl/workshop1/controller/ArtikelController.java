@@ -10,12 +10,12 @@ import nl.workshop1.view.OutputText;
  *
  * @author FeniksBV
  */
-public class ArtikelViewController extends Controller {
+public class ArtikelController extends Controller {
 
     private ArtikelView artikelView;
     private Artikel initialArtikel = null;
 
-    public ArtikelViewController(Artikel artikel) {
+    public ArtikelController(Artikel artikel) {
         String titel;
         if (artikel != null) {
             initialArtikel = (Artikel) artikel.clone();

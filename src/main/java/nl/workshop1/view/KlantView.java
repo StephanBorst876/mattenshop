@@ -117,6 +117,7 @@ public class KlantView extends View {
         klantViewMenu.addSubMenu(AdresType.Bezorgadres.getDescription(), displayAdres(AdresType.Bezorgadres), "7");
         klantViewMenu.addSubMenu("Sortering", String.valueOf(klant.getSortering()), "8");
         klantViewMenu.addSubMenu("Opslaan", "9");
+        klantViewMenu.addSubMenu("Terug", "0");
     }
 
     protected String displayAdres(AdresType adresType) {

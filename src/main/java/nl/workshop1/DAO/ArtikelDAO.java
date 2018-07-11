@@ -11,7 +11,7 @@ public interface ArtikelDAO {
 
     public void deleteArtikel(int id);
 
-    public int insertArtikel(Artikel artikel);
+    public void insertArtikel(Artikel artikel);
 
     public void updateArtikel(Artikel artikel);
 

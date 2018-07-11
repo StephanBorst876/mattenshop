@@ -13,14 +13,14 @@ import nl.workshop1.view.OutputText;
  *
  * @author FeniksBV
  */
-public class KlantViewController extends Controller {
+public class KlantController extends Controller {
 
     private KlantView klantView;
     private Klant klant = null;
     private ArrayList<Adres> initialAdresList = new ArrayList<>();
     private ArrayList<Adres> adresList = new ArrayList<>();
 
-    public KlantViewController(Klant klant, ArrayList<Adres> adresList) {
+    public KlantController(Klant klant, ArrayList<Adres> adresList) {
         String titel;
         if (klant == null) {
             titel = "Klant toevoegen";
@@ -55,7 +55,7 @@ public class KlantViewController extends Controller {
                     // Een adres invoeren of wijzigen gaat via de AdresController.
                     adresList = klantView.getAdresList();
                     Adres adres = getAdresFromList(klantView.getAdresType(), adresList);
-                    AdresViewController adresCtrl = new AdresViewController(klantView.getAdresType(), adres);
+                    AdresController adresCtrl = new AdresController(klantView.getAdresType(), adres);
                     adresCtrl.runController();
                     switch (adresCtrl.getRequestedAction()) {
                         case "6":

@@ -61,7 +61,7 @@ public class ArtikelDAOImpl implements ArtikelDAO {
     }
 
     @Override
-    public int insertArtikel(Artikel artikel) {
+    public void insertArtikel(Artikel artikel) {
         Slf4j.getLogger().info("insertArtikel({})", artikel.getNaam());
 
         try {
@@ -86,13 +86,11 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             }
             Slf4j.getLogger().info("insertArtikel({}) ended", newArtikelId);
 
-            return newArtikelId;
+            artikel.setId(newArtikelId);
 
         } catch (Exception sqlException) {
             Slf4j.getLogger().error("SQL exception occurred ", sqlException);
         }
-
-        return 0;
 
     }
 

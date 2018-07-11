@@ -11,12 +11,12 @@ import nl.workshop1.view.OutputText;
  *
  * @author FeniksBV
  */
-public class AccountViewController extends Controller {
+public class AccountController extends Controller {
 
     private AccountView accountView;
     private Account initialAccount = null;
 
-    public AccountViewController(Account account, Klant klant) {
+    public AccountController(Account account, Klant klant) {
         String titel;
         if (account != null) {
             initialAccount = (Account) account.clone();

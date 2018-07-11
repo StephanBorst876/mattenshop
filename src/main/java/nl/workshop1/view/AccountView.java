@@ -109,6 +109,7 @@ public class AccountView extends View {
             klant = null;
             accountViewMenu.addSubMenu("Opslaan", "5");
         }
+        accountViewMenu.addSubMenu("Terug", "0");
 
     }
 

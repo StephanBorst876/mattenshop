@@ -1,5 +1,10 @@
 package nl.workshop1.DAO;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,12 +26,35 @@ import org.xml.sax.SAXException;
  */
 public class DbConnection {
 
+    public static final String DB_MYSQL = "mysql";
+    public static final String DB_MONGODB = "mongodb";
+
+    private static String dbSelectie = DB_MYSQL;
+
     private static Connection connection = null;
+    private static MongoDatabase MongoDb = null;
 
     protected static String driver = "";
     protected static String url = "";
     protected static String username = "";
     protected static String password = "";
+
+    public static MongoDatabase getMongoConnection() {
+        if (MongoDb == null) {
+            MongoClient mongo = new MongoClient("localhost", 27017);
+            MongoDb = mongo.getDatabase("mattenshop");
+        }
+        return MongoDb;
+    }
+
+    public static Integer nextMongoId(MongoCollection<org.bson.Document> collection) {
+        FindIterable<org.bson.Document> docs = collection.find().sort(new BasicDBObject("id", -1)).limit(1);
+        Integer newId = 1;
+        for (org.bson.Document doc : docs) {
+            newId = 1 + doc.getInteger("id");
+        }
+        return newId;
+    }
 
     public static Connection getConnection() {
         if (connection == null) {
@@ -101,5 +129,13 @@ public class DbConnection {
             Slf4j.getLogger().error("initializeSettingsProperties failed", e);
         }
 
+    }
+
+    public static void setDbSelectie(String newDbSelectie) {
+        dbSelectie = newDbSelectie;
+    }
+
+    public static String getDbSelectie() {
+        return dbSelectie;
     }
 }

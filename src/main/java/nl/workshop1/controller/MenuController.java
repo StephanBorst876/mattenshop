@@ -15,7 +15,6 @@ import nl.workshop1.model.Role;
 import nl.workshop1.view.Menu;
 import nl.workshop1.view.MenuView;
 import nl.workshop1.view.UserInput;
-import nl.workshop1.view.View;
 
 /**
  *
@@ -28,6 +27,11 @@ public class MenuController extends Controller {
 
     public MenuController(String titel) {
         this.menu = new Menu(titel);
+        if (titel.equals(Menu.TITEL_BESTELLINGEN)) {
+            this.menu.setInfoLine("Nieuwe bestelling maken of kies evt. uit bovenstaande om te wijzigen");
+        } else if(titel.equals(Menu.TITEL_BESTELREGELS)) {
+            this.menu.setInfoLine("Nieuwe bestelregel maken of kies evt. uit bovenstaande om te wijzigen");
+        }
         this.menuView = new MenuView(this.menu);
     }
 
@@ -85,7 +89,7 @@ public class MenuController extends Controller {
     }
 
     protected void startViewer(String reqAction) {
-        if (menu.getTitle().equals(View.TITEL_ACCOUNTS)) {
+        if (menu.getTitle().equals(Menu.TITEL_ACCOUNTS)) {
 
             Account account = null;
             Klant klant = null;
@@ -99,10 +103,10 @@ public class MenuController extends Controller {
                     klant = DAOFactory.getKlantDAO().readKlant(account.getKlantId());
                 }
             }
-            AccountViewController accountCtrl = new AccountViewController(account, klant);
+            AccountController accountCtrl = new AccountController(account, klant);
             accountCtrl.runController();
 
-        } else if (menu.getTitle().equals(View.TITEL_ARTIKELEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_ARTIKELEN)) {
 
             Artikel artikel = null;
             if (requestedAction.equals("3")) {
@@ -110,10 +114,10 @@ public class MenuController extends Controller {
                 Object object = menu.getSelectedObject();
                 artikel = (Artikel) object;
             }
-            ArtikelViewController artikelCtrl = new ArtikelViewController(artikel);
+            ArtikelController artikelCtrl = new ArtikelController(artikel);
             artikelCtrl.runController();
 
-        } else if (menu.getTitle().equals(View.TITEL_BESTELLINGEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_BESTELLINGEN)) {
 
             // Start de controller voor de bestelregels
             Bestelling bestelling = null;
@@ -126,12 +130,12 @@ public class MenuController extends Controller {
                 // WIJZIG
                 bestelling = (Bestelling) menu.getSelectedObject();
             }
-            MenuController bestelRegelCtrl = new MenuController(View.TITEL_BESTELREGELS);
+            MenuController bestelRegelCtrl = new MenuController(Menu.TITEL_BESTELREGELS);
             bestelRegelCtrl.setBestelKlant(menu.getBestelKlant());
             bestelRegelCtrl.setBestelling(bestelling);
             bestelRegelCtrl.runController();
 
-        } else if (menu.getTitle().equals(View.TITEL_KLANTEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_KLANTEN)) {
 
             Klant klant = null;
             ArrayList<Adres> adresList = new ArrayList<>();
@@ -141,10 +145,10 @@ public class MenuController extends Controller {
                 klant = (Klant) menu.getSelectedObject();
                 adresList = DAOFactory.getAdresDAO().readAdresWithKlantId(klant.getId());
             }
-            KlantViewController klantCtrl = new KlantViewController(klant, adresList);
+            KlantController klantCtrl = new KlantController(klant, adresList);
             klantCtrl.runController();
 
-        } else if (menu.getTitle().equals(View.TITEL_BESTELREGELS)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_BESTELREGELS)) {
 
             int verschilGereserveerd = 0;
             BestelRegel bestelRegel;
@@ -156,7 +160,7 @@ public class MenuController extends Controller {
                 bestelRegel = (BestelRegel) menu.getSelectedObject();
                 verschilGereserveerd = bestelRegel.getAantal();
             }
-            BestelRegelViewController bestelRegelCtrl = new BestelRegelViewController(
+            BestelRegelController bestelRegelCtrl = new BestelRegelController(
                     menu.getBestelling(), bestelRegel);
             bestelRegelCtrl.runController();
             if (bestelRegelCtrl.getRequestedAction().equals("4")) {
@@ -232,8 +236,10 @@ public class MenuController extends Controller {
 
                 // Bestelling update
                 BigDecimal totaalPrijs = new BigDecimal(menu.getBestelling().getTotaalprijs().toString());
-                BigDecimal regelPrijs = new BigDecimal(delRegel.getPrijs().toString());
-                menu.getBestelling().setTotaalprijs(totaalPrijs.subtract(regelPrijs));
+                BigDecimal aantalArtikel = new BigDecimal(delRegel.getAantal());
+
+                menu.getBestelling().setTotaalprijs(totaalPrijs.subtract(
+                        delRegel.getPrijs().multiply(aantalArtikel)));
                 DAOFactory.getBestellingDAO().updateBestelling(menu.getBestelling());
 
                 // Update artikel voor nieuw aantal gereserveerd
@@ -250,28 +256,28 @@ public class MenuController extends Controller {
     protected void searchWithFilter() {
         menu.setRecordSelected(false);
         menu.getRecordList().clear();
-        if (menu.getTitle().equals(View.TITEL_ACCOUNTS)) {
+        if (menu.getTitle().equals(Menu.TITEL_ACCOUNTS)) {
             ArrayList<Account> tmpList = DAOFactory.getAccountDAO().readAccountWithFilter(menu.getFilter());
             for (Account account : tmpList) {
                 menu.getRecordList().add(account);
             }
-        } else if (menu.getTitle().equals(View.TITEL_ARTIKELEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_ARTIKELEN)) {
             ArrayList<Artikel> tmpList = DAOFactory.getArtikelDAO().readArtikelWithFilter(menu.getFilter());
             for (Artikel artikel : tmpList) {
                 menu.getRecordList().add(artikel);
             }
-        } else if (menu.getTitle().equals(View.TITEL_KLANTEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_KLANTEN)) {
             ArrayList<Klant> tmpList = DAOFactory.getKlantDAO().readKlantWithFilter(menu.getFilter());
             for (Klant klant : tmpList) {
                 menu.getRecordList().add(klant);
             }
-        } else if (menu.getTitle().equals(View.TITEL_BESTELLINGEN)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_BESTELLINGEN)) {
             ArrayList<Bestelling> tmpList = DAOFactory.getBestellingDAO().readBestellingWithFilter(
                     menu.getBestelKlant().getId(), menu.getFilter());
             for (Bestelling bestelling : tmpList) {
                 menu.getRecordList().add(bestelling);
             }
-        } else if (menu.getTitle().equals(View.TITEL_BESTELREGELS)) {
+        } else if (menu.getTitle().equals(Menu.TITEL_BESTELREGELS)) {
             if (menu.getBestelling().getId() != 0) {
                 ArrayList<BestelRegel> tmpList = DAOFactory.getBestelRegelDAO().readRegelsWithFilter(
                         menu.getBestelling().getId(), menu.getFilter());

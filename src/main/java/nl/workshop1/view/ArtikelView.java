@@ -71,11 +71,13 @@ public class ArtikelView extends View {
     protected void buildSubMenuList() {
         artikelViewMenu.clearSubMenuList();
         artikelViewMenu.addSubMenu("Artikelnaam", artikel.getNaam(), "1");
-        artikelViewMenu.addSubMenu("Prijs", artikel.getPrijs().toString(), "2");
+        artikelViewMenu.addSubMenu("Prijs/st", currencyDisplay(artikel.getPrijs()), "2");
+//        artikelViewMenu.addSubMenu("Prijs", artikel.getPrijs().toString(), "2");
         artikelViewMenu.addSubMenu("Voorraad", String.valueOf(artikel.getVoorraad()), "3");
         artikelViewMenu.addSubMenu("Gereserveerd", String.valueOf(artikel.getGereserveerd()), "4");
         artikelViewMenu.addSubMenu("Sortering", String.valueOf(artikel.getSortering()), "5");
         artikelViewMenu.addSubMenu("Opslaan", "6");
+        artikelViewMenu.addSubMenu("Terug", "0");
     }
 
     /**

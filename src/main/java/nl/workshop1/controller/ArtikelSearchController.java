@@ -5,7 +5,6 @@ import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.model.Artikel;
 import nl.workshop1.view.Menu;
 import nl.workshop1.view.MenuView;
-import nl.workshop1.view.View;
 
 /**
  *
@@ -18,7 +17,8 @@ public class ArtikelSearchController extends Controller {
     private ArrayList<Artikel> excludedArtikelList;
 
     public ArtikelSearchController() {
-        this.artikelMenu = new Menu(View.TITEL_ARTIKELEN);
+        this.artikelMenu = new Menu(Menu.TITEL_ZOEK_ARTIKELEN);
+        this.artikelMenu.setInfoLine("Kies een artikel uit bovenstaande opties.");
         this.artikelMenuView = new MenuView(this.artikelMenu);
         this.excludedArtikelList = new ArrayList<>();
     }

@@ -1,0 +1,4 @@
+email, wachtwoord, account_type, klant_id
+boer@piet.nl, piet, Admin
+stephan@borst.nl, stephan, Medewerker
+klant1@klant.nl, klant1, Klant, 1

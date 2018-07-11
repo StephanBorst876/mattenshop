@@ -30,8 +30,8 @@ public class LoginView extends View {
             loginAccount.setWachtwoord("piet");
 //        loginAccount.seunt.setUserName("stephan@borst.nl");
 //        loginAccoutWachtwoord("stephan");
-//        loginAccount.setUserName("klant@klant.nl");
-//        loginAccount.setWachtwoord("klant");
+//        loginAccount.setUserName("klant1@klant.nl");
+//        loginAccount.setWachtwoord("klant1");
             if (Validator.validLoginAccount(loginAccount)) {
                 OutputText.showMessage("Autologin enabled");
                 return "1";

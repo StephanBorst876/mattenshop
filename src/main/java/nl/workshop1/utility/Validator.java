@@ -11,11 +11,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 public class Validator {
 
     public static boolean validLoginAccount(Account loginAccount) {
-
-        Slf4j.getLogger().info("validLoginAccount({})", loginAccount.getUserName());
-
         Account account = DAOFactory.getAccountDAO().readAccountByUserName(loginAccount.getUserName());
-
         if (account != null) {
             if (account.getWachtwoord() != null) {
                 if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {

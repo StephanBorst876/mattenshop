@@ -1,0 +1,10 @@
+id,straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type
+1,postadres,12,h,2211XX,Oegstgeest,1, Postadres
+1,factuuradres,12,h,2211XX,Oegstgeest,1, Factuuradres
+1,bezorgadres,12,h,2211XX,Oegstgeest,1, Bezorgadres
+2.postadres,12,h,2211XX,Oegstgeest,2, Postadres
+3,postadres,12,h,2211XX,Oegstgeest,3, Postadres
+4,postadres,12,h,2211XX,Oegstgeest,4, Postadres
+5,postadres,12,h,2211XX,Oegstgeest,5, Postadres
+6,postadres,12,h,2211XX,Oegstgeest,6, Postadres
+7,postadres,12,h,2211XX,Oegstgeest,7, Postadres

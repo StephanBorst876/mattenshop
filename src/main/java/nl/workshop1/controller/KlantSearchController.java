@@ -5,7 +5,6 @@ import nl.workshop1.DAO.DAOFactory;
 import nl.workshop1.model.Klant;
 import nl.workshop1.view.Menu;
 import nl.workshop1.view.MenuView;
-import nl.workshop1.view.View;
 
 /**
  *
@@ -17,8 +16,9 @@ public class KlantSearchController extends Controller {
     private MenuView klantMenuView;
 
     public KlantSearchController() {
-        this.klantMenu = new Menu(View.TITEL_KLANTEN);
+        this.klantMenu = new Menu(Menu.TITEL_ZOEK_KLANTEN);
         this.klantMenuView = new MenuView(this.klantMenu);
+        this.klantMenu.setInfoLine("Kies een klant uit bovenstaande opties.");
     }
 
     @Override

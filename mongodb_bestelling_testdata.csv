@@ -1,0 +1,4 @@
+id,klant_id,totaalprijs,besteldatum,bestelstatus
+1,1,280.00, 2018-07-10T11:02:51.548Z, Onderhanden
+2,1,28.00, 2018-07-10T11:02:51.548Z, Onderhanden
+3,1,25.00, 2018-07-10T11:02:51.548Z, Onderhanden

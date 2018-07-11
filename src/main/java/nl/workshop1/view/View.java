@@ -1,5 +1,7 @@
 package nl.workshop1.view;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Adres;
 import nl.workshop1.model.Artikel;
@@ -13,18 +15,13 @@ import nl.workshop1.model.Klant;
  */
 public abstract class View extends UserInput {
 
-    // Titels voor de verschillende menu's
-    public static final String TITEL_ACCOUNTS = "Accounts";
-    public static final String TITEL_ARTIKELEN = "Artikelen";
-    public static final String TITEL_KLANTEN = "Klanten";
-    public static final String TITEL_BESTELLINGEN = "Bestellingen";
-    public static final String TITEL_BESTELREGELS = "Bestellingregels";
-    
-    private static final int NUMBER_RECORDS_TO_DISPLAY = 5;
+    private static final int NUMBER_RECORDS_TO_DISPLAY = 26;
 
     private Menu menu;
+    protected ArrayList<Character> validOptions;
 
     public View(Menu menu) {
+        this.validOptions = new ArrayList<>();
         this.menu = menu;
     }
 
@@ -43,6 +40,8 @@ public abstract class View extends UserInput {
      */
     public void drawMenu() {
 
+        validOptions.clear();
+
         if (menu.getTitle() != null) {
             if (menu.getLoginName().isEmpty()) {
                 OutputText.showTitle(menu.getTitle());
@@ -53,10 +52,10 @@ public abstract class View extends UserInput {
 
         if (menu.getBestelKlant() != null) {
             // Alleen wanneer we in bestellingen zitten
-            OutputText.showMessage("Huidige klant      : " + menu.getBestelKlant().getFullName());
+            OutputText.showMessage("     Huidige klant      : " + menu.getBestelKlant().getFullName());
         }
         if (menu.getBestelling() != null) {
-            OutputText.showMessage("Huidige bestelling : " + menu.getBestelling().getBestelDatum());
+            OutputText.showMessage("     Huidige bestelling : " + menu.getBestelling().getBestelDatum());
         }
 
         if (menu.isRecordSelected()) {
@@ -82,17 +81,25 @@ public abstract class View extends UserInput {
 
             }
             // Add an empty line after shown records
-            if (menu.getRecordList().size() > 0) {
+            if ((menu.getRecordList().size() > 0)
+                    || (menu.getInfoLine().length() > 0)) {
                 OutputText.showMessage("");
             }
         }
 
+        // Is er nog een extra infoLine
+        if (menu.getInfoLine().length() > 0) {
+            OutputText.showMessage("  " + menu.getInfoLine());
+        }
+
         // Show all submenu
         for (int i = 0; i < menu.getSubMenuList().size(); i++) {
-            OutputText.showMessage(generateChoice('1', i) + menu.getSubMenuList().get(i));
-        }
-        if (menu.getSubMenuList().size() > 0) {
-            OutputText.showMessage(generateChoice('0', 0) + "Terug");
+            // Optie 0 uit de submenus wordt apart afgehandeld
+            if (menu.getActionList().get(i).equals("0")) {
+                OutputText.showMessage(generateChoice('0', 0) + menu.getSubMenuList().get(i));
+            } else {
+                OutputText.showMessage(generateChoice('1', i) + menu.getSubMenuList().get(i));
+            }
         }
 
     }
@@ -101,14 +108,14 @@ public abstract class View extends UserInput {
         if (obj instanceof Account) {
             return String.format("     %-30s%-15s", "Gebruikersnaam", "Role");
         } else if (obj instanceof Artikel) {
-            return String.format("     %-30s%10s%10s%10s%10s", "Artikelnaam", "Prijs",
+            return String.format("     %-30s%10s%10s%10s%10s", "Artikelnaam", "Prijs/st",
                     "Voorraad", "Gereserv.", "Sortering");
         } else if (obj instanceof Klant) {
             return String.format("     %-20s%-30s%-30s%-10s", "Achternaam", "Volledige naam", "Email", "Sortering");
         } else if (obj instanceof Bestelling) {
             return String.format("     %-11s%-30s%10s %-30s", "Referentie", "Besteldatum", "Totaal", "Bestelstatus");
         } else if (obj instanceof BestelRegel) {
-            return String.format("     %-30s%10s%10s", "Artikelnaam", "Aantal", "Prijs");
+            return String.format("     %-30s%10s%10s", "Artikelnaam", "Aantal", "Prijs/st");
         }
         return "";
     }
@@ -123,7 +130,7 @@ public abstract class View extends UserInput {
                     klant.getEmail(), klant.getSortering());
         } else if (obj instanceof Artikel) {
             Artikel artikel = (Artikel) obj;
-            return String.format("%-30s%10.2f%10d%10d%10d", artikel.getNaam(), artikel.getPrijs(),
+            return String.format("%-30s%10s%10d%10d%10d", artikel.getNaam(), currencyDisplay(artikel.getPrijs()),
                     artikel.getVoorraad(), artikel.getGereserveerd(), artikel.getSortering());
         } else if (obj instanceof Adres) {
             Adres adres = (Adres) obj;
@@ -131,15 +138,21 @@ public abstract class View extends UserInput {
                     adres.getHuisNummer(), adres.getToevoeging(), adres.getWoonplaats());
         } else if (obj instanceof Bestelling) {
             Bestelling bestelling = (Bestelling) obj;
-            return String.format("%-11d%-30s%10.2f %-30s", bestelling.getId(),
-                    bestelling.getBestelDatum(), bestelling.getTotaalprijs(),
+            return String.format("%-11d%-30s%10s %-30s", bestelling.getId(),
+                    bestelling.getBestelDatum(),
+                    currencyDisplay(bestelling.getTotaalprijs()),
                     bestelling.getBestelstatus());
         } else if (obj instanceof BestelRegel) {
             BestelRegel bestelRegel = (BestelRegel) obj;
-            return String.format("%-30s%10d%10.2f", bestelRegel.getArtikelNaam(),
-                    bestelRegel.getAantal(), bestelRegel.getPrijs());
+            return String.format("%-30s%10d%10s", bestelRegel.getArtikelNaam(),
+                    bestelRegel.getAantal(),
+                    currencyDisplay(bestelRegel.getPrijs()));
         }
         return "";
+    }
+
+    public static String currencyDisplay(Object obj) {
+        return NumberFormat.getCurrencyInstance().format(obj);
     }
 
     /**
@@ -151,7 +164,9 @@ public abstract class View extends UserInput {
      */
     protected String generateChoice(char offset, int index) {
         StringBuilder s = new StringBuilder();
-        return s.append("  ").append((char) (offset + index)).append(". ").toString();
+        char option = (char) (offset + index);
+        validOptions.add(option);
+        return s.append("  ").append(option).append(". ").toString();
     }
 
     /**
@@ -184,11 +199,10 @@ public abstract class View extends UserInput {
         if (choice.charAt(0) >= 'A' && choice.charAt(0) <= 'Z') {
             if (!menu.isRecordSelected()) {
                 int selected = (int) (choice.charAt(0) - 'A');
-                if (selected < menu.getRecordList().size()) {
+                if (selected <= menu.getRecordList().size()) {
                     return choice;
                 }
             }
-            return null;
         }
 
         if (choice.charAt(0) == '0') {
@@ -199,8 +213,10 @@ public abstract class View extends UserInput {
         if (choice.charAt(0) >= '1' && choice.charAt(0) <= '9') {
             int index = Integer.valueOf(choice);
             // Is de gekozen optie aanwezig in het menu?
-            if (index <= menu.getActionList().size()) {
-                return menu.getActionList().get(index - 1);
+            for (int i = 0; i < validOptions.size(); i++) {
+                if (choice.charAt(0) == validOptions.get(i)) {
+                    return menu.getActionList().get(index - 1);
+                }
             }
         }
 

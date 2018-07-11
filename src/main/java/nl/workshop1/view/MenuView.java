@@ -37,8 +37,8 @@ public class MenuView extends View {
                     }
                 }
                 
-                if (menu.getTitle().equals(TITEL_KLANTEN)
-                        || menu.getTitle().equals(TITEL_ARTIKELEN)) {
+                if (menu.getTitle().equals(Menu.TITEL_ZOEK_KLANTEN)
+                        || menu.getTitle().equals(Menu.TITEL_ZOEK_ARTIKELEN)) {
                     // Direct teruggeven, want voor SEARCH-MODE moeten we iets aparts doen.
                     return requestedAction;
                 }

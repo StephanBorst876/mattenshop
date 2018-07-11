@@ -1,13 +1,13 @@
 package nl.workshop1.controller;
 
 import nl.workshop1.DAO.DAOFactory;
+import nl.workshop1.DAO.DbConnection;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
 import nl.workshop1.view.Menu;
 import nl.workshop1.view.OutputText;
 import nl.workshop1.view.SimpleMenuView;
-import nl.workshop1.view.View;
 
 /**
  *
@@ -21,14 +21,27 @@ public class MainController extends Controller {
     private Klant inlogKlant = null;
 
     public MainController() {
-        this.hoofdMenu = new Menu("Hoofdmenu");
+        this.hoofdMenu = new Menu(Menu.TITEL_HOOFDMENU);
         this.hoofdMenuView = new SimpleMenuView(this.hoofdMenu);
     }
 
     @Override
     public void runController() {
 
-        // Eerst inloggen
+        // Welke Db te gebruiken?
+        DbController dbCtrl = new DbController();
+        dbCtrl.runController();
+        switch (dbCtrl.getRequestedAction()) {
+            case "0":
+                return;
+            case "1":
+                DbConnection.setDbSelectie(DbConnection.DB_MYSQL);
+                break;
+            case "2":
+                DbConnection.setDbSelectie(DbConnection.DB_MONGODB);
+                break;
+        }
+
         // Start the login procedure
         LoginController loginCtrl = new LoginController();
         loginCtrl.runController();
@@ -66,6 +79,7 @@ public class MainController extends Controller {
         if (role.equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Accounts", "4");
         }
+        hoofdMenu.addSubMenu("Afsluiten", "0");
 
         // De main-loop die wordt doorlopen totdat de applicatie wordt afgesloten.
         while (true) {
@@ -73,14 +87,7 @@ public class MainController extends Controller {
             switch (hoofdMenuView.userChoice()) {
                 case "0":
                     // Afsluiten
-                    AfsluitenController afsluitCtrl = new AfsluitenController();
-                    afsluitCtrl.runController();
-                    // Oeps. Pas hier op: Alle controllers/menu's geven optie=0 als zijnde
-                    // terug, maar de afsluitController geeft 1 als Afsluiten.
-                    if (afsluitCtrl.getRequestedAction().equals("1")) {
-                        return;
-                    }
-                    break;
+                    return;
                 case "1":
                     // Bestellingen
 
@@ -97,23 +104,23 @@ public class MainController extends Controller {
                     } else {
                         bestelKlant = (Klant) inlogKlant.clone();
                     }
-                    MenuController bestelMenuCtrl = new MenuController(View.TITEL_BESTELLINGEN);
+                    MenuController bestelMenuCtrl = new MenuController(Menu.TITEL_BESTELLINGEN);
                     bestelMenuCtrl.setBestelKlant(bestelKlant);
                     bestelMenuCtrl.runController();
                     break;
                 case "2":
                     // Klanten
-                    MenuController klantMenuCtrl = new MenuController(View.TITEL_KLANTEN);
+                    MenuController klantMenuCtrl = new MenuController(Menu.TITEL_KLANTEN);
                     klantMenuCtrl.runController();
                     break;
                 case "3":
                     // Artikelen
-                    MenuController artikelMenuCtrl = new MenuController(View.TITEL_ARTIKELEN);
+                    MenuController artikelMenuCtrl = new MenuController(Menu.TITEL_ARTIKELEN);
                     artikelMenuCtrl.runController();
                     break;
                 case "4":
                     // Accounts
-                    MenuController accountMenuCtrl = new MenuController(View.TITEL_ACCOUNTS);
+                    MenuController accountMenuCtrl = new MenuController(Menu.TITEL_ACCOUNTS);
                     accountMenuCtrl.runController();
             }
         }

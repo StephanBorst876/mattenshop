@@ -14,7 +14,7 @@ public class LoginController extends Controller {
     private LoginView loginView;
 
     public LoginController() {
-        this.loginMenu = new Menu("Inloggen");
+        this.loginMenu = new Menu(Menu.TITEL_INLOGGEN);
         this.loginView = new LoginView(loginMenu);
     }
 
@@ -23,15 +23,7 @@ public class LoginController extends Controller {
 
         while (true) {
             requestedAction = loginView.runViewer();
-            switch (requestedAction) {
-                case "0":
-                    // Geen correcte login
-                    return;
-                case "1":
-                    // WEL een correcte login
-                    return;
-            }
-                    
+            return;
         }
     }
 

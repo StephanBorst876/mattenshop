@@ -74,7 +74,8 @@ public class BestelRegelView extends View {
         // Artikel Id/Naam mag niet worden gewijzigd
         bestelRegelViewMenu.addSubMenu("Artikel", bestelRegel.getArtikelNaam(), "99");
         bestelRegelViewMenu.addSubMenu("Aantal", String.valueOf(bestelRegel.getAantal()), "2");
-        bestelRegelViewMenu.addSubMenu("Prijs", bestelRegel.getPrijs().toString(), "3");
+        bestelRegelViewMenu.addSubMenu("Prijs/st", currencyDisplay(bestelRegel.getPrijs()), "3");
         bestelRegelViewMenu.addSubMenu("Opslaan", "4");
+        bestelRegelViewMenu.addSubMenu("Terug", "0");
     }
 }

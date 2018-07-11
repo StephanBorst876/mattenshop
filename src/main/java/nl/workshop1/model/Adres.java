@@ -129,18 +129,6 @@ public class Adres implements Cloneable {
         this.adresType = adresType;
     }
 
-    /**
-     * @param newAdresType the adresType to set
-     */
-    public void setAdresType(String newAdresType) {
-        AdresType tmpAdresType = AdresType.getAdresType(newAdresType);
-        if (tmpAdresType != null) {
-            this.adresType = tmpAdresType;
-        }
-    }
-
-    
-
     @Override
     public Object clone() {
         try {
