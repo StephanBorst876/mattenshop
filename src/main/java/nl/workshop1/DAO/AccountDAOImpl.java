@@ -16,12 +16,12 @@ import nl.workshop1.utility.Slf4j;
 public class AccountDAOImpl implements AccountDAO {
 
     private final String ACCOUNT_SELECT
-            = "SELECT email, wachtwoord, account_type, klant_id "
+            = "SELECT email, wachtwoord, salt, account_type, klant_id "
             + "FROM account "
             + "WHERE email = ?";
 
     private final String ACCOUNT_LIKE
-            = "SELECT email, wachtwoord, account_type, klant_id "
+            = "SELECT email, wachtwoord, salt, account_type, klant_id "
             + "FROM account "
             + "WHERE email like ?";
 
@@ -29,11 +29,11 @@ public class AccountDAOImpl implements AccountDAO {
             = "delete from account where email = ?";
 
     private final String ACCOUNT_INSERT
-            = "insert into account (email, wachtwoord, account_type,klant_id) values (?, ?, ?, ?)";
+            = "insert into account (email, wachtwoord, salt, account_type,klant_id) values (?, ?, ?, ?, ?)";
 
     private final String ACCOUNT_UPDATE
             = "update account "
-            + "set wachtwoord=?,account_type=?,klant_id=? "
+            + "set wachtwoord=?,salt=?,account_type=?,klant_id=? "
             + "where email = ?";
 
     protected ArrayList<Account> selectAccount(String query, String userName) {
@@ -42,10 +42,8 @@ public class AccountDAOImpl implements AccountDAO {
 
         ArrayList<Account> accountList = new ArrayList<>();
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
             pstmtObj.setString(1, userName);
             try (ResultSet resultSet = pstmtObj.executeQuery()) {
@@ -53,6 +51,7 @@ public class AccountDAOImpl implements AccountDAO {
                     Account account = new Account();
                     account.setUserName(resultSet.getString("email"));
                     account.setWachtwoord(resultSet.getString("wachtwoord"));
+                    account.setSalt(resultSet.getString("salt"));
                     account.setRole(Role.valueOf(resultSet.getString("account_type")));
                     account.setKlantId(resultSet.getInt("klant_id"));
                     accountList.add(account);
@@ -89,10 +88,8 @@ public class AccountDAOImpl implements AccountDAO {
 
         Slf4j.getLogger().info("deleteAccount({})", userName);
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_DELETE);) {
 
             pstmtObj.setString(1, userName);
             pstmtObj.execute();
@@ -107,19 +104,19 @@ public class AccountDAOImpl implements AccountDAO {
     public void insertAccount(Account account) {
         Slf4j.getLogger().info("insertAccount({})", account.getUserName());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_INSERT);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_INSERT);) {
 
             pstmtObj.setString(1, account.getUserName());
             pstmtObj.setString(2, account.getWachtwoord());
-            pstmtObj.setString(3, account.getRole().getDescription());
+            pstmtObj.setString(3, account.getSalt());
+            pstmtObj.setString(4, account.getRole().getDescription());
             // Indien ROLE_KLANT dan update het klantID, anders null
+
             if (account.getRole() == Role.Klant) {
-                pstmtObj.setInt(4, account.getKlantId());
+                pstmtObj.setInt(5, account.getKlantId());
             } else {
-                pstmtObj.setNull(4, Types.INTEGER);
+                pstmtObj.setNull(5, Types.INTEGER);
             }
 
             pstmtObj.execute();
@@ -131,22 +128,22 @@ public class AccountDAOImpl implements AccountDAO {
     }
 
     @Override
-    public void updateAccount(Account account) {
+    public void updateAccount(Account account
+    ) {
         Slf4j.getLogger().info("updateAccount({})", account.getUserName());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ACCOUNT_UPDATE);) {
 
             pstmtObj.setString(1, account.getWachtwoord());
-            pstmtObj.setString(2, account.getRole().getDescription());
+            pstmtObj.setString(2, account.getSalt());
+            pstmtObj.setString(3, account.getRole().getDescription());
             if (account.getRole() == Role.Klant) {
-                pstmtObj.setInt(3, account.getKlantId());
+                pstmtObj.setInt(4, account.getKlantId());
             } else {
-                pstmtObj.setNull(3, Types.INTEGER);
+                pstmtObj.setNull(4, Types.INTEGER);
             }
-            pstmtObj.setString(4, account.getUserName());
+            pstmtObj.setString(5, account.getUserName());
 
             pstmtObj.execute();
             Slf4j.getLogger().info("updateAccount() ended.", pstmtObj.toString());

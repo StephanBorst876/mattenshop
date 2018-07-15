@@ -1,7 +1,9 @@
 package nl.workshop1.view;
 
+import nl.workshop1.controller.MainController;
 import nl.workshop1.model.Artikel;
 import nl.workshop1.model.BestelRegel;
+import nl.workshop1.model.Role;
 
 /**
  *
@@ -62,7 +64,7 @@ public class BestelRegelView extends View {
                     return requestedAction;
                 case "99":
                     // Negeren, geen actie
-                    OutputText.showError("Wijzigen artikel is NIET toegestaan!");
+                    OutputText.showError("Deze data mag NIET worden gewijzigd!");
                     break;
             }
         }
@@ -74,7 +76,13 @@ public class BestelRegelView extends View {
         // Artikel Id/Naam mag niet worden gewijzigd
         bestelRegelViewMenu.addSubMenu("Artikel", bestelRegel.getArtikelNaam(), "99");
         bestelRegelViewMenu.addSubMenu("Aantal", String.valueOf(bestelRegel.getAantal()), "2");
-        bestelRegelViewMenu.addSubMenu("Prijs/st", currencyDisplay(bestelRegel.getPrijs()), "3");
+        // De Role Klant mag de prijs niet wijzigen
+        if (MainController.getRole().equals(Role.Klant)) {
+            // Deze mogen de prijs NIET wijzigen
+            bestelRegelViewMenu.addSubMenu("Prijs/st", currencyDisplay(bestelRegel.getPrijs()), "99");
+        } else {
+            bestelRegelViewMenu.addSubMenu("Prijs/st", currencyDisplay(bestelRegel.getPrijs()), "3");
+        }
         bestelRegelViewMenu.addSubMenu("Opslaan", "4");
         bestelRegelViewMenu.addSubMenu("Terug", "0");
     }

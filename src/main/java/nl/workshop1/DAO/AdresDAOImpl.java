@@ -18,7 +18,7 @@ public class AdresDAOImpl implements AdresDAO {
             = "SELECT id,straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type "
             + "FROM adres "
             + "WHERE klant_id = ?";
-    
+
     private final String ADRES_INSERT = "insert into adres "
             + "(straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id,adres_type) "
             + "values (?,?,?,?,?,?,?)";
@@ -34,10 +34,8 @@ public class AdresDAOImpl implements AdresDAO {
     public void deleteAdres(int id) {
         Slf4j.getLogger().info("deleteAdres({})", id);
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_DELETE);) {
 
             pstmtObj.setInt(1, id);
             pstmtObj.execute();
@@ -53,10 +51,8 @@ public class AdresDAOImpl implements AdresDAO {
     public void insertAdres(Adres adres) {
         Slf4j.getLogger().info("insertAdres()");
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_INSERT);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_INSERT);) {
 
             pstmtObj.setString(1, adres.getStraatNaam());
             pstmtObj.setInt(2, adres.getHuisNummer());
@@ -79,10 +75,8 @@ public class AdresDAOImpl implements AdresDAO {
     public void updateAdres(Adres adres) {
         Slf4j.getLogger().info("updateAdres({})", adres.getId());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_UPDATE);) {
 
             pstmtObj.setString(1, adres.getStraatNaam());
             pstmtObj.setInt(2, adres.getHuisNummer());
@@ -106,10 +100,8 @@ public class AdresDAOImpl implements AdresDAO {
 
         ArrayList<Adres> adresList = new ArrayList<>();
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_SELECT);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ADRES_SELECT);) {
 
             pstmtObj.setInt(1, klantId);
             try (ResultSet resultSet = pstmtObj.executeQuery()) {
@@ -124,7 +116,7 @@ public class AdresDAOImpl implements AdresDAO {
                     adres.setWoonplaats(resultSet.getString("woonplaats"));
                     adres.setKlantId(resultSet.getInt("klant_id"));
                     adres.setAdresType(AdresType.valueOf(resultSet.getString("adres_type")));
-                                        
+
                     adresList.add(adres);
                 }
             }

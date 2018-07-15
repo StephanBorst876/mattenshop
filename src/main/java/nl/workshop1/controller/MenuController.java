@@ -215,18 +215,26 @@ public class MenuController extends Controller {
             }
         } else if (object instanceof Bestelling) {
             if (UserInput.getInputAkkoord("\nVerwijderen bestelling !!")) {
-                DAOFactory.getBestellingDAO().deleteBestelling(((Bestelling) object).getId());
-
-                // En pas voor alle artikelen de hoeveelheid voorraad en gereserveerd aan
+                // Pas voor alle artikelen de hoeveelheid voorraad en gereserveerd aan
                 ArrayList<BestelRegel> bestelRegelList = DAOFactory.getBestelRegelDAO().readRegelsWithFilter(
                         ((Bestelling) object).getId(), "");
                 for (int i = 0; i < bestelRegelList.size(); i++) {
                     Artikel artikel = DAOFactory.getArtikelDAO().readArtikelByNaam(
                             bestelRegelList.get(i).getArtikelNaam());
-                    artikel.setVoorraad(artikel.getVoorraad() - bestelRegelList.get(i).getAantal());
                     artikel.setGereserveerd(artikel.getGereserveerd() - bestelRegelList.get(i).getAantal());
                     DAOFactory.getArtikelDAO().updateArtikel(artikel);
+                    
+                    // Delete iedere regel bij deze bestelling
+                    // Zou evt. ook door een enkele delete op bestellingId kunnen worden uitgevoerd,
+                    // Maar dan wel buiten de for-loop !!
+                    DAOFactory.getBestelRegelDAO().deleteBestelRegel(bestelRegelList.get(i).getId());
+                    
                 }
+                
+                // Verwijder nu de bestelling zelf
+                DAOFactory.getBestellingDAO().deleteBestelling(((Bestelling) object).getId());
+
+                
 
             }
         } else if (object instanceof BestelRegel) {

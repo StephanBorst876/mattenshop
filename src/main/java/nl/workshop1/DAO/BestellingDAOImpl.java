@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import nl.workshop1.model.Bestelling;
 import nl.workshop1.model.Bestelstatus;
@@ -43,10 +44,9 @@ public class BestellingDAOImpl implements BestellingDAO {
 
         ArrayList<Bestelling> bestellingList = new ArrayList<>();
 
-        try {
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
             pstmtObj.setInt(1, id);
             pstmtObj.setString(2, filter);
 
@@ -88,9 +88,8 @@ public class BestellingDAOImpl implements BestellingDAO {
     public void deleteBestelling(int bestellingId) {
         Slf4j.getLogger().info("deleteBestelling({})", bestellingId);
 
-        try {
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_DELETE);) {
 
             pstmtObj.setInt(1, bestellingId);
             pstmtObj.execute();
@@ -106,18 +105,17 @@ public class BestellingDAOImpl implements BestellingDAO {
     public void insertBestelling(Bestelling bestelling) {
         Slf4j.getLogger().info("insertBestelling({})", bestelling.getKlantId());
 
-        try {
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_INSERT,
-                     PreparedStatement.RETURN_GENERATED_KEYS);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_INSERT,
+                        PreparedStatement.RETURN_GENERATED_KEYS);) {
 
             pstmtObj.setInt(1, bestelling.getKlantId());
             pstmtObj.setFloat(2, bestelling.getTotaalprijs().floatValue());
-            pstmtObj.setDate(3, getSQLDate(bestelling.getBestelDatum()));
+            pstmtObj.setTimestamp(3, getSQLDate(bestelling.getBestelDatum()));
             pstmtObj.setString(4, bestelling.getBestelstatus().getDescription());
 
             pstmtObj.execute();
-            
+
             // Using the getGeneratedKeys() method to retrieve
             // the key(s). In this case there is only one key column: klant.id
             ResultSet keyResultSet = pstmtObj.getGeneratedKeys();
@@ -129,7 +127,7 @@ public class BestellingDAOImpl implements BestellingDAO {
                 // regels toe tee kennen.
                 bestelling.setId(newBestellingId);
             }
-            
+
             Slf4j.getLogger().info("insertBestelling() ended.");
 
         } catch (Exception sqlException) {
@@ -137,8 +135,8 @@ public class BestellingDAOImpl implements BestellingDAO {
         }
     }
 
-    protected static java.sql.Date getSQLDate(java.util.Date date) {
-        return new java.sql.Date(date.getTime());
+    protected static Timestamp getSQLDate(java.util.Date date) {
+        return new java.sql.Timestamp(date.getTime());
     }
 
     @Override
@@ -146,13 +144,11 @@ public class BestellingDAOImpl implements BestellingDAO {
 
         Slf4j.getLogger().info("updateBestelling({})", bestelling.getId());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELLING_UPDATE);) {
 
             pstmtObj.setFloat(1, bestelling.getTotaalprijs().floatValue());
-            pstmtObj.setDate(2, getSQLDate(bestelling.getBestelDatum()));
+            pstmtObj.setTimestamp(2, getSQLDate(bestelling.getBestelDatum()));
             pstmtObj.setInt(3, bestelling.getId());
             Slf4j.getLogger().info(pstmtObj.toString());
 

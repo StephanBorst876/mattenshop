@@ -14,13 +14,22 @@ public class Validator {
         Account account = DAOFactory.getAccountDAO().readAccountByUserName(loginAccount.getUserName());
         if (account != null) {
             if (account.getWachtwoord() != null) {
-                if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {
+                // Volgende NIET meer gebruiken !!
+                //  if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {
+                //
+                byte[] expectedHash = Password.hash(account.getWachtwoord().toCharArray(), 
+                        account.getSalt().getBytes());
+                if (Password.isExpectedPassword(
+                        loginAccount.getWachtwoord().toCharArray(),
+                        account.getSalt().getBytes(), expectedHash)) {
                     loginAccount.setRole(account.getRole());
                     loginAccount.setKlantId(account.getKlantId());
                     return true;
                 }
+
             }
         }
+
         return false;
     }
 

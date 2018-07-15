@@ -49,7 +49,7 @@ public class KlantView extends View {
         // Initially ask for input all datafields
         if (klant.getAchternaam() == null) {
             // Nu weet je zeker dat dit de eerste keer is
-            klant.setEmail(getInputUsername(false));
+            klant.setEmail(getInputUsername(/*allowEmptyInput=*/false));
             klant.setVoornaam(getInputVoornaam());
             klant.setTussenvoegsel(getInputTussenvoegsel());
             klant.setAchternaam(getInputAchternaam());
@@ -70,7 +70,7 @@ public class KlantView extends View {
                 case "0":
                     return requestedAction;
                 case "1":
-                    klant.setEmail(getInputUsername(false));
+                    klant.setEmail(getInputUsername(/*allowEmptyInput=*/false));
                     break;
                 case "2":
                     klant.setVoornaam(getInputVoornaam());

@@ -15,9 +15,11 @@ import nl.workshop1.view.SimpleMenuView;
  */
 public class MainController extends Controller {
 
+    // Default voor role is Klant, tenzij anders ingelogd
+    private static Role role = Role.Klant;
+    
     private Menu hoofdMenu;
     private SimpleMenuView hoofdMenuView;
-    private Role role;
     private Klant inlogKlant = null;
 
     public MainController() {
@@ -33,6 +35,7 @@ public class MainController extends Controller {
         dbCtrl.runController();
         switch (dbCtrl.getRequestedAction()) {
             case "0":
+                // Afsluiten
                 return;
             case "1":
                 DbConnection.setDbSelectie(DbConnection.DB_MYSQL);
@@ -40,6 +43,17 @@ public class MainController extends Controller {
             case "2":
                 DbConnection.setDbSelectie(DbConnection.DB_MONGODB);
                 break;
+        }
+
+        // Indien MySQL gekozen, dan is de default HikariCP.
+        // Vraag of men JDBC wil gebruiken.
+        if (DbConnection.getDbSelectie().equals(DbConnection.DB_MYSQL)) {
+            ConnectionPoolController cpCtrl = new ConnectionPoolController();
+            cpCtrl.runController();
+            if (cpCtrl.getRequestedAction().equals("J")) {
+                // Er is gekozen om JDBC te gebruiken
+                DbConnection.setHikariCPenabled(false);
+            }
         }
 
         // Start the login procedure
@@ -54,9 +68,10 @@ public class MainController extends Controller {
                 // een correcte Login.
                 Account login = loginCtrl.getLoginAccount();
                 role = login.getRole();
-                // Lees klantgegevens indien een inlogKlant is ingelogd
+
                 Menu.loginName = login.getUserName();
-                if (role.equals(Role.Klant)) {
+                if (getRole().equals(Role.Klant)) {
+                    // Lees klantgegevens indien een inlogKlant is ingelogd
                     inlogKlant = DAOFactory.getKlantDAO().readKlant(login.getKlantId());
                     if (inlogKlant == null) {
                         // Wel de role Klant, maar geen bijbehorende klantobject
@@ -70,13 +85,13 @@ public class MainController extends Controller {
         // Bouw nu het menu
         hoofdMenu.clearSubMenuList();
         hoofdMenu.addSubMenu("Bestellingen", "1");
-        if (role.equals(Role.Admin) || role.equals(Role.Admin)) {
+        if (getRole().equals(Role.Admin) || getRole().equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Klanten", "2");
         }
-        if (role.equals(Role.Admin) || role.equals(Role.Admin)) {
+        if (getRole().equals(Role.Admin) || getRole().equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Artikelen", "3");
         }
-        if (role.equals(Role.Admin)) {
+        if (getRole().equals(Role.Admin)) {
             hoofdMenu.addSubMenu("Accounts", "4");
         }
         hoofdMenu.addSubMenu("Afsluiten", "0");
@@ -124,6 +139,13 @@ public class MainController extends Controller {
                     accountMenuCtrl.runController();
             }
         }
+    }
+
+    /**
+     * @return the role
+     */
+    public static Role getRole() {
+        return role;
     }
 
 }

@@ -32,7 +32,7 @@ public class ArtikelDAOImpl implements ArtikelDAO {
             = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
             + "WHERE naam like ? AND aktief <> 0 "
             + "ORDER BY sortering";
-    
+
     private final String ARTIKEL_SELECT_NAAM
             = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
             + "WHERE naam = ? ";
@@ -40,15 +40,13 @@ public class ArtikelDAOImpl implements ArtikelDAO {
     private final String ARTIKEL_SELECT_ID
             = "SELECT id, naam, prijs, voorraad, gereserveerd, sortering FROM artikel "
             + "WHERE id = ? ";
-    
+
     @Override
     public void deleteArtikel(int id) {
         Slf4j.getLogger().info("deleteArtikel({})", id);
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_DELETE);) {
 
             pstmtObj.setInt(1, id);
             pstmtObj.execute();
@@ -64,11 +62,9 @@ public class ArtikelDAOImpl implements ArtikelDAO {
     public void insertArtikel(Artikel artikel) {
         Slf4j.getLogger().info("insertArtikel({})", artikel.getNaam());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_INSERT,
-                    PreparedStatement.RETURN_GENERATED_KEYS);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_INSERT,
+                        PreparedStatement.RETURN_GENERATED_KEYS);) {
 
             pstmtObj.setString(1, artikel.getNaam());
             pstmtObj.setFloat(2, artikel.getPrijs().floatValue());
@@ -99,10 +95,8 @@ public class ArtikelDAOImpl implements ArtikelDAO {
 
         Slf4j.getLogger().info("updateArtikel({})", artikel.getId());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(ARTIKEL_UPDATE);) {
 
             pstmtObj.setString(1, artikel.getNaam());
             pstmtObj.setFloat(2, artikel.getPrijs().floatValue());
@@ -127,10 +121,8 @@ public class ArtikelDAOImpl implements ArtikelDAO {
 
         ArrayList<Artikel> artikelList = new ArrayList<>();
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
             pstmtObj.setString(1, arg);
             try (ResultSet resultSet = pstmtObj.executeQuery()) {
@@ -175,17 +167,14 @@ public class ArtikelDAOImpl implements ArtikelDAO {
         return null;
     }
 
-    
     protected ArrayList<Artikel> selectArtikelId(String query, int id) {
 
         Slf4j.getLogger().info(query + " " + id);
 
         ArrayList<Artikel> artikelList = new ArrayList<>();
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
             pstmtObj.setInt(1, id);
             try (ResultSet resultSet = pstmtObj.executeQuery()) {
@@ -211,7 +200,7 @@ public class ArtikelDAOImpl implements ArtikelDAO {
         return artikelList;
 
     }
-    
+
     @Override
     public Artikel readArtikelById(int id) {
         //
@@ -224,5 +213,4 @@ public class ArtikelDAOImpl implements ArtikelDAO {
         return null;
     }
 
-    
 }

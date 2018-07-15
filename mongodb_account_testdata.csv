@@ -1,4 +1,4 @@
-email, wachtwoord, account_type, klant_id
-boer@piet.nl, piet, Admin
-stephan@borst.nl, stephan, Medewerker
-klant1@klant.nl, klant1, Klant, 1
+email, wachtwoord, salt, account_type, klant_id
+boer@piet.nl, [B@224aed64, [B@29453f44,Admin
+stephan@borst.nl, [B@71e7a66b, [B@c39f790,Medewerker
+klant1@klant.nl, [B@5f150435, [B@2ac1fdc4,Klant, 1

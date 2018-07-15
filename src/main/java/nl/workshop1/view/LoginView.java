@@ -27,11 +27,11 @@ public class LoginView extends View {
             // TODO: Tijdens ontwikkeling, gebruik een default en auto login
             // Test met verschillende soorten (Roles) ccounts
             loginAccount.setUserName("boer@piet.nl");
-            loginAccount.setWachtwoord("piet");
+            loginAccount.setWachtwoord("[B@224aed64");
 //        loginAccount.seunt.setUserName("stephan@borst.nl");
-//        loginAccoutWachtwoord("stephan");
+//        loginAccoutWachtwoord("[B@71e7a66b");
 //        loginAccount.setUserName("klant1@klant.nl");
-//        loginAccount.setWachtwoord("klant1");
+//        loginAccount.setWachtwoord("[B@5f150435");
             if (Validator.validLoginAccount(loginAccount)) {
                 OutputText.showMessage("Autologin enabled");
                 return "1";
@@ -39,7 +39,7 @@ public class LoginView extends View {
 
             // Hier start de (productie) procedure !!
             OutputText.showMessage("Een lege gebruikersnaam zal de applicatie afsluiten.");
-            loginAccount.setUserName(getInputUsername(true));
+            loginAccount.setUserName(getInputUsername(/*allowEmptyInput=*/true));
             if (loginAccount.getUserName() == null) {
                 loginAccount = null;
                 return "0";

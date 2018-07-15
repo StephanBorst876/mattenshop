@@ -19,18 +19,17 @@ public abstract class UserInput {
 
     /**
      *
-     * @param emptyAllowed
+     * @param allowEmptyInput
      * @return : gebruikersnaam (of null)
      */
-    public String getInputUsername(boolean emptyAllowed) {
+    public String getInputUsername(boolean allowEmptyInput) {
 
         do {
             OutputText.showText("Een gebruikersnaam heeft de syntax van een emailadres.\n");
             OutputText.showText("Gebruikersnaam : ");
             String username = input.nextLine();
 
-            if (emptyAllowed) {
-                // Alleen bij inloggen
+            if (allowEmptyInput) {
                 if (username.isEmpty()) {
                     return null;
                 }

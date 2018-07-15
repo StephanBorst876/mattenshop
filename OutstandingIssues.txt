@@ -1,3 +1,12 @@
+- Sequentiediagram voor inlogproces toegevoegd. Niet geimplementeerd.
+
+- *.properties zijn verplaatst naar de map src/main/resources/*
+In hoeverre kan/moet ik de files die betrekking hebben op Db create
+en testdata ook naar een aparte map verhuizen?
+
+- Password hashing/salting toegevoegd
+LET OP: Create databases (MySQL en Mongo) opnieuw en run de scripts voor de testdata.
+
 - MongoDb toegevoegd.
 run_mongodb_testdata.bat om testdata te laden in MongoDb.
 Geen bestellingen/bestelregels (problemen met Date format!).
@@ -7,6 +16,3 @@ Geen bestellingen/bestelregels (problemen met Date format!).
 - Keuze voor database wordt nu vanuit MainController doorgegeven aan DbConnection
 Mag dat aan DAOFactory ? 
 - Algemeen: wat ie een geijkte manier van dit soort keuzes afhandelen, hoe?
-
-- Mockito? Moet ik nog verder induiken.
-

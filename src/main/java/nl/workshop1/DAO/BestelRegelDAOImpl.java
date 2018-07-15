@@ -30,17 +30,16 @@ public class BestelRegelDAOImpl implements BestelRegelDAO {
             = "update bestel_regel "
             + "set aantal=?,prijs=? "
             + "where id = ?";
-    
+
     private ArrayList<BestelRegel> selectBestelRegel(String query, int id, String filter) {
 
         Slf4j.getLogger().info(query + " " + filter + " " + id);
 
         ArrayList<BestelRegel> bestelRegelList = new ArrayList<>();
 
-        try {
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
             pstmtObj.setInt(1, id);
             pstmtObj.setString(2, filter);
 
@@ -82,10 +81,8 @@ public class BestelRegelDAOImpl implements BestelRegelDAO {
 
         Slf4j.getLogger().info("deleteBestelRegel({})", bestelRegelId);
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_DELETE);) {
 
             pstmtObj.setInt(1, bestelRegelId);
             pstmtObj.execute();
@@ -101,10 +98,8 @@ public class BestelRegelDAOImpl implements BestelRegelDAO {
     public void insertBestelRegel(BestelRegel bestelRegel) {
         Slf4j.getLogger().info("insertBestelRegel({})", bestelRegel.getArtikelNaam());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_INSERT);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_INSERT);) {
 
             pstmtObj.setInt(1, bestelRegel.getBestellingId());
             pstmtObj.setInt(2, bestelRegel.getArtikelId());
@@ -121,13 +116,11 @@ public class BestelRegelDAOImpl implements BestelRegelDAO {
 
     @Override
     public void updateBestelRegel(BestelRegel bestelRegel) {
-        
+
         Slf4j.getLogger().info("updateBestelRegel({})", bestelRegel.getId());
 
-        try {
-            
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(BESTELREGEL_UPDATE);) {
 
             pstmtObj.setInt(1, bestelRegel.getAantal());
             pstmtObj.setFloat(2, bestelRegel.getPrijs().floatValue());

@@ -5,6 +5,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,10 +28,12 @@ import org.xml.sax.SAXException;
  */
 public class DbConnection {
 
-    public static final String DB_MYSQL = "mysql";
-    public static final String DB_MONGODB = "mongodb";
+    public static final String DB_MYSQL = "MySQL";
+    public static final String DB_MONGODB = "MongoDB";
 
     private static String dbSelectie = DB_MYSQL;
+    private static boolean hikariCPenabled = true;
+    private static HikariDataSource ds = null;
 
     private static Connection connection = null;
     private static MongoDatabase MongoDb = null;
@@ -39,6 +43,10 @@ public class DbConnection {
     protected static String username = "";
     protected static String password = "";
 
+    /**
+     * Used for DbConnection when MongoDb
+     * @return  handle to MongoDatabase
+     */
     public static MongoDatabase getMongoConnection() {
         if (MongoDb == null) {
             MongoClient mongo = new MongoClient("localhost", 27017);
@@ -56,11 +64,35 @@ public class DbConnection {
         return newId;
     }
 
+    /**
+     * Used when MySQL selected
+     * @return  Connection to MySQL database
+     */
     public static Connection getConnection() {
-        if (connection == null) {
-            connection = initializeConnection();
+        if (hikariCPenabled) {
+            // Pool Connection in use
+            if (ds == null) {
+                HikariConfig config = new HikariConfig();
+                config = new HikariConfig("src/main/resources/hikari.properties");
+                ds = new HikariDataSource(config);
+            }
+            try {
+                return ds.getConnection();
+            } catch (SQLException ex) {
+                Slf4j.getLogger().error("hikari ds.getConnection() failed", ex);
+            }
+        } else {
+            try {
+                // JDBC connection
+                if (connection == null || connection.isClosed()) {
+                    connection = initializeConnection();
+                }
+            } catch (SQLException ex) {
+                Slf4j.getLogger().error("connection.isClosed() failed", ex);
+            }
+            return connection;
         }
-        return connection;
+        return null;
     }
 
     protected static Connection initializeConnection() {
@@ -92,7 +124,7 @@ public class DbConnection {
     protected static void initializeSettingsXml() {
 
         try {
-            File DbConnFile = new File("mysql.xml");
+            File DbConnFile = new File("src/main/resources/mysql.xml");
             if (!DbConnFile.exists()) {
                 Slf4j.getLogger().error("Missing mysql.xml in : ", DbConnFile.getAbsolutePath());
             }
@@ -116,7 +148,7 @@ public class DbConnection {
         // JDBC Database Credentials (user / password) 
         Properties props = new Properties();
 
-        try (FileInputStream in = new FileInputStream("db.properties")) {
+        try (FileInputStream in = new FileInputStream("src/main/resources/mysql.properties")) {
             props.load(in);
             driver = props.getProperty("jdbc.driver");
             url = props.getProperty("jdbc.url");
@@ -124,6 +156,7 @@ public class DbConnection {
             password = props.getProperty("jdbc.password");
 
         } catch (FileNotFoundException e) {
+            Slf4j.getLogger().error("Missing file: mysql.properties");
             Slf4j.getLogger().error("initializeSettingsProperties failed", e);
         } catch (IOException e) {
             Slf4j.getLogger().error("initializeSettingsProperties failed", e);
@@ -137,5 +170,12 @@ public class DbConnection {
 
     public static String getDbSelectie() {
         return dbSelectie;
+    }
+
+    /**
+     * @param newHikariCPenabled the hikariCPenabled to set
+     */
+    public static void setHikariCPenabled(boolean newHikariCPenabled) {
+        hikariCPenabled = newHikariCPenabled;
     }
 }

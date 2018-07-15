@@ -62,9 +62,9 @@ INSERT INTO adres (straatnaam,huisnummer,toevoeging,postcode,woonplaats,klant_id
 -- -----------------------------------------------------
 -- Table `mattenshop`.`account`
 -- -----------------------------------------------------
-INSERT INTO account (email, wachtwoord, account_type) VALUES ("boer@piet.nl", "piet", "Admin");
-INSERT INTO account (email, wachtwoord, account_type) VALUES ("stephan@borst.nl", "stephan", "Medewerker");
-INSERT INTO account (email, wachtwoord, account_type,klant_id) VALUES ("klant1@klant.nl", "klant1", "Klant", 1);
+INSERT INTO account (email, wachtwoord, salt, account_type) VALUES ("boer@piet.nl", "[B@224aed64", "[B@29453f44", "Admin");
+INSERT INTO account (email, wachtwoord, salt, account_type) VALUES ("stephan@borst.nl", "[B@71e7a66b", "[B@c39f790", "Medewerker");
+INSERT INTO account (email, wachtwoord, salt, account_type,klant_id) VALUES ("klant1@klant.nl", "[B@5f150435", "[B@2ac1fdc4", "Klant", 1);
 
 
 -- -----------------------------------------------------

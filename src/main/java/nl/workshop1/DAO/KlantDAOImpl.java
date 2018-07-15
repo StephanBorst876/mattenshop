@@ -24,7 +24,7 @@ public class KlantDAOImpl implements KlantDAO {
             = "SELECT id,email,voornaam,achternaam,tussenvoegsel,sortering "
             + "FROM klant "
             + "WHERE email = ? ";
-    
+
     private final String KLANT_LIKE
             = "SELECT id,email,voornaam,achternaam,tussenvoegsel,sortering "
             + "FROM klant "
@@ -50,10 +50,9 @@ public class KlantDAOImpl implements KlantDAO {
 
         ArrayList<Klant> klantList = new ArrayList<>();
 
-        try {
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(query);) {
 
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(query);
             if (filter != null) {
                 pstmtObj.setString(1, filter);
             } else {
@@ -90,7 +89,7 @@ public class KlantDAOImpl implements KlantDAO {
 
         return klantList;
     }
-    
+
     @Override
     public Klant readKlantWithEmail(String email) {
         Slf4j.getLogger().info("readKlant({})", email);
@@ -118,9 +117,8 @@ public class KlantDAOImpl implements KlantDAO {
     public void deleteKlant(int id) {
         Slf4j.getLogger().info("deleteKlant({})", id);
 
-        try {
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_DELETE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_DELETE);) {
 
             pstmtObj.setInt(1, id);
             pstmtObj.execute();
@@ -135,11 +133,9 @@ public class KlantDAOImpl implements KlantDAO {
     public void insertKlant(Klant klant) {
         Slf4j.getLogger().info("insertKlant({})", klant.getEmail());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_INSERT,
-                    PreparedStatement.RETURN_GENERATED_KEYS);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_INSERT,
+                        PreparedStatement.RETURN_GENERATED_KEYS);) {
 
             pstmtObj.setString(1, klant.getEmail());
             pstmtObj.setString(2, klant.getVoornaam());
@@ -175,10 +171,8 @@ public class KlantDAOImpl implements KlantDAO {
 
         Slf4j.getLogger().info("updateKlant({})", klant.getId());
 
-        try {
-
-            Connection connObj = DbConnection.getConnection();
-            PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_UPDATE);
+        try (Connection connObj = DbConnection.getConnection();
+                PreparedStatement pstmtObj = connObj.prepareStatement(KLANT_UPDATE);) {
 
             pstmtObj.setString(1, klant.getEmail());
             pstmtObj.setString(2, klant.getVoornaam());

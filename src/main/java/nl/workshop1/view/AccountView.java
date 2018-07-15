@@ -3,6 +3,7 @@ package nl.workshop1.view;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
+import nl.workshop1.utility.Password;
 
 /**
  *
@@ -45,7 +46,7 @@ public class AccountView extends View {
         // Initially ask for input all datafields
         if (account.getUserName().isEmpty()) {
             // Nu weet je zeker dat dit de eerste keer is
-            account.setUserName(getInputUsername(false));
+            account.setUserName(getInputUsername(/*allowEmptyInput=*/false));
             account.setWachtwoord(getInputWachtwoord());
             account.setRole(getInputRole());
 
@@ -63,10 +64,14 @@ public class AccountView extends View {
                 case "0":
                     return requestedAction;
                 case "1":
-                    account.setUserName(getInputUsername(false));
+                    account.setUserName(getInputUsername(/*allowEmptyInput=*/false));
                     break;
                 case "2":
-                    account.setWachtwoord(getInputWachtwoord());
+                    String wachtwoord = getInputWachtwoord();
+                    byte[] salt = Password.getNextSalt();
+                    byte[] hashed = Password.hash(wachtwoord.toCharArray(),salt);
+                    account.setWachtwoord(hashed.toString());
+                    account.setSalt(salt.toString());
                     break;
                 case "3":
                     account.setRole(getInputRole());
@@ -94,7 +99,7 @@ public class AccountView extends View {
             // Modifying an account, username is not allowed to change
             accountViewMenu.addSubMenu("Username", account.getUserName(), "99");
         }
-        accountViewMenu.addSubMenu("Wachtwoord", account.getWachtwoord(), "2");
+        accountViewMenu.addSubMenu("Wachtwoord", "**********", "2");
         accountViewMenu.addSubMenu("Role", account.getRole().getDescription(), "3");
 
         if (account.getRole() == Role.Klant) {

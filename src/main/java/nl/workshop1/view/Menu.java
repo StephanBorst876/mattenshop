@@ -32,7 +32,7 @@ public class Menu {
     // Titels voor de verschillende menu's
     public static final String TITEL_HOOFDMENU = "Hoofdmenu";
     public static final String TITEL_INLOGGEN = "Inloggen";
-    public static final String TITEL_DB_SELECTIE = "Database selectie";
+    public static final String TITEL_DB_SELECTIE = "Keuze database";
     public static final String TITEL_ACCOUNTS = "Accounts";
     public static final String TITEL_ARTIKELEN = "Artikelen";
     public static final String TITEL_KLANTEN = "Klanten";
@@ -40,6 +40,7 @@ public class Menu {
     public static final String TITEL_BESTELREGELS = "Bestellingregels";
     public static final String TITEL_ZOEK_ARTIKELEN = "Zoek artikelen";
     public static final String TITEL_ZOEK_KLANTEN = "Zoek klanten";
+    public static final String TITEL_CONNECTION_POOL = "Keuze connection pool";
     
     // Titel van het menu
     private String title;
