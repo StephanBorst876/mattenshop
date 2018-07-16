@@ -1,6 +1,5 @@
 package nl.workshop1.view;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Adres;
@@ -152,7 +151,9 @@ public abstract class View extends UserInput {
     }
 
     public static String currencyDisplay(Object obj) {
-        return NumberFormat.getCurrencyInstance().format(obj);
+        return String.format("€%8.2f", obj);
+
+//        return NumberFormat.getCurrencyInstance().format(obj);
     }
 
     /**
@@ -178,7 +179,7 @@ public abstract class View extends UserInput {
 
         while (true) {
             String choice = getInputChoice();
-            if (choice.length() > 0) {
+            if (choice.length() == 1) {
                 String value = validChoice(choice);
                 if (value != null) {
                     return value;
@@ -219,7 +220,6 @@ public abstract class View extends UserInput {
                 }
             }
         }
-
         return null;
     }
 

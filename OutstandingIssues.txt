@@ -1,18 +1,10 @@
-- Sequentiediagram voor inlogproces toegevoegd. Niet geimplementeerd.
-
-- *.properties zijn verplaatst naar de map src/main/resources/*
-In hoeverre kan/moet ik de files die betrekking hebben op Db create
-en testdata ook naar een aparte map verhuizen?
-
-- Password hashing/salting toegevoegd
+- Password hashing/salting gewijzigd
 LET OP: Create databases (MySQL en Mongo) opnieuw en run de scripts voor de testdata.
 
-- MongoDb toegevoegd.
-run_mongodb_testdata.bat om testdata te laden in MongoDb.
-Geen bestellingen/bestelregels (problemen met Date format!).
+Ik ervaar een vreemd gedrag: soms werkt het wel en soms niet.
+In MainController.java heb ik code toegevoegd (updateAllAccount()) om de wachtwoorden te zetten.
+Daarna wordt er een gelezen in Validator.validLogin(), maar zoals gezegd soms correct, soms incorrect.
 
-- MongoDb initialisatie met XML ? User authorisation ?
-
-- Keuze voor database wordt nu vanuit MainController doorgegeven aan DbConnection
-Mag dat aan DAOFactory ? 
-- Algemeen: wat ie een geijkte manier van dit soort keuzes afhandelen, hoe?
+Mijn vermoeden: Het ligt aan het gegenereerde hashed/salted password en het opslaan/teruglezen in
+de database. Bij sommige waarden werkt dat niet volledig.
+Heb jij ideeen?

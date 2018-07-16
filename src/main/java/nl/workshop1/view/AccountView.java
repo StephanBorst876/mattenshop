@@ -70,8 +70,7 @@ public class AccountView extends View {
                     String wachtwoord = getInputWachtwoord();
                     byte[] salt = Password.getNextSalt();
                     byte[] hashed = Password.hash(wachtwoord.toCharArray(),salt);
-                    account.setWachtwoord(hashed.toString());
-                    account.setSalt(salt.toString());
+                    account.setWachtwoord(new String(salt) + new String(hashed));
                     break;
                 case "3":
                     account.setRole(getInputRole());

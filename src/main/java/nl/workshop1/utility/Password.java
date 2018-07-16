@@ -3,7 +3,6 @@ package nl.workshop1.utility;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -18,24 +17,8 @@ import javax.crypto.spec.PBEKeySpec;
 public class Password {
 
     private static final SecureRandom RANDOM = new SecureRandom();
-    private static final int ITERATIONS = 10000;
+    private static final int ITERATIONS = 1000;
     private static final int KEY_LENGTH = 256;
-
-    public static void main(String[] args) {
-        ArrayList<String> passwordList = new ArrayList<>();
-        passwordList.add("piet");
-        passwordList.add("stephan");
-        passwordList.add("klant1");
-
-        for (int i = 0; i < passwordList.size(); i++) {
-            System.out.println("Password = " + passwordList.get(i));
-            byte[] salt = getNextSalt();
-            System.out.println("salt   = " + salt);
-            byte[] hashed = hash(passwordList.get(i).toCharArray(), salt);
-            System.out.println("hashed = " + hashed);
-            System.out.println();
-        }
-    }
 
     /**
      * Returns a random salt to be used to hash a password.
@@ -43,7 +26,7 @@ public class Password {
      * @return a 16 bytes random salt
      */
     public static byte[] getNextSalt() {
-        byte[] salt = new byte[20];
+        byte[] salt = new byte[16];
         RANDOM.nextBytes(salt);
         return salt;
     }
@@ -68,13 +51,12 @@ public class Password {
         } finally {
             spec.clearPassword();
         }
+
     }
 
     /**
      * Returns true if the given password and salt match the hashed value, false
      * otherwise.<br>
-     * Note - side effect: the password is destroyed (the char[] is filled with
-     * zeros)
      *
      * @param password the password to check
      * @param salt the salt used to hash the password
@@ -84,7 +66,6 @@ public class Password {
      * otherwise
      */
     public static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
-        byte[] pwdHash = hash(password, salt);
 
         // Don't use following. Its is vulnerable to timing attacks!!
 //        if (pwdHash.length != expectedHash.length) {
@@ -95,6 +76,7 @@ public class Password {
 //                return false;
 //            }
 //        }
+        byte[] pwdHash = hash(password, salt);
         int diff = pwdHash.length ^ expectedHash.length;
         for (int i = 0; i < pwdHash.length && i < expectedHash.length; i++) {
             diff |= pwdHash[i] ^ expectedHash[i];

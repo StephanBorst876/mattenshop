@@ -11,7 +11,6 @@ public class Account implements Cloneable {
 
     private String userName;
     private String wachtwoord;
-    private String salt;
     private Role role;
     private int klantId;
 
@@ -41,21 +40,6 @@ public class Account implements Cloneable {
         this.wachtwoord = wachtwoord;
     }
 
-    
-    /**
-     * @return the salt
-     */
-    public String getSalt() {
-        return salt;
-    }
-
-    /**
-     * @param salt the salt to set
-     */
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-    
     /**
      * @return the klantId
      */

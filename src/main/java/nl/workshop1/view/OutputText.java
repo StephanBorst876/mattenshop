@@ -6,10 +6,15 @@ package nl.workshop1.view;
  */
 public class OutputText {
 
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_RED = "\u001B[31m";
+//    private static final String ANSI_RESET = "\u001B[0m";
+//    private static final String ANSI_BLUE = "\u001B[34m";
+//    public static final String ANSI_RED = "\u001B[31m";
 
+    private static final String ANSI_RESET = "";
+    private static final String ANSI_BLUE = "";
+    public static final String ANSI_RED = "";
+    
+        
     public static void showText(String msg) {
         System.out.print(msg);
     }

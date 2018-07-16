@@ -5,6 +5,7 @@ import nl.workshop1.DAO.DbConnection;
 import nl.workshop1.model.Account;
 import nl.workshop1.model.Klant;
 import nl.workshop1.model.Role;
+import nl.workshop1.utility.Password;
 import nl.workshop1.view.Menu;
 import nl.workshop1.view.OutputText;
 import nl.workshop1.view.SimpleMenuView;
@@ -56,6 +57,10 @@ public class MainController extends Controller {
             }
         }
 
+        // TODO: Alleen tijdens ontwikkeling
+        updateAllAccounts();
+        
+        
         // Start the login procedure
         LoginController loginCtrl = new LoginController();
         loginCtrl.runController();
@@ -85,10 +90,10 @@ public class MainController extends Controller {
         // Bouw nu het menu
         hoofdMenu.clearSubMenuList();
         hoofdMenu.addSubMenu("Bestellingen", "1");
-        if (getRole().equals(Role.Admin) || getRole().equals(Role.Admin)) {
+        if (getRole().equals(Role.Admin) || getRole().equals(Role.Medewerker)) {
             hoofdMenu.addSubMenu("Klanten", "2");
         }
-        if (getRole().equals(Role.Admin) || getRole().equals(Role.Admin)) {
+        if (getRole().equals(Role.Admin) || getRole().equals(Role.Medewerker)) {
             hoofdMenu.addSubMenu("Artikelen", "3");
         }
         if (getRole().equals(Role.Admin)) {
@@ -148,4 +153,46 @@ public class MainController extends Controller {
         return role;
     }
 
+    protected void updateAllAccounts() {
+        // Alleen tijdens ontwikkeling !!!
+
+        Account newAccount = new Account();
+
+        newAccount.setUserName("stephan@borst.nl");
+        newAccount.setWachtwoord("stephan");
+        newAccount.setRole(Role.Medewerker);
+        newAccount.setKlantId(0);
+        updateAccount(newAccount);
+
+        newAccount.setUserName("klant1@klant.nl");
+        newAccount.setWachtwoord("klant1");
+        newAccount.setRole(Role.Klant);
+        newAccount.setKlantId(1);
+        updateAccount(newAccount);
+        
+        newAccount.setUserName("boer@piet.nl");
+        newAccount.setWachtwoord("piet");
+        newAccount.setRole(Role.Admin);
+        newAccount.setKlantId(0);
+        updateAccount(newAccount);
+        
+    }
+
+    protected void updateAccount(Account account) {
+        // Alleen tijdens ontwikkeling !!!
+        byte[] salt = Password.getNextSalt();
+        byte[] passwdHash = Password.hash(account.getWachtwoord().toCharArray(), salt);
+
+        Account newAccount = new Account();
+        newAccount.setWachtwoord(new String(salt) + new String(passwdHash));
+        newAccount.setUserName(account.getUserName());
+        newAccount.setRole(account.getRole());
+        newAccount.setKlantId(account.getKlantId());
+        DAOFactory.getAccountDAO().updateAccount(newAccount);
+
+//        System.out.println( "User    = "+ newAccount.getUserName());
+//        System.out.println( "Salt    = "+ new String(salt));
+//        System.out.println( "Hash    = "+ newAccount.getWachtwoord());
+//        System.out.println();
+    }
 }

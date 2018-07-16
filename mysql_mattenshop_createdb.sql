@@ -43,8 +43,7 @@ AUTO_INCREMENT = 14;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mattenshop`.`account` (
   `email` VARCHAR(45) NOT NULL,
-  `wachtwoord` VARCHAR(45) NOT NULL,
-  `salt` VARCHAR(45) NOT NULL,
+  `wachtwoord` VARCHAR(100) NOT NULL,
   `account_type` ENUM('Admin', 'Medewerker', 'Klant') NULL DEFAULT NULL,
   `klant_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`email`),

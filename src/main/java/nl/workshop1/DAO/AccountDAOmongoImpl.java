@@ -38,7 +38,6 @@ public class AccountDAOmongoImpl implements AccountDAO {
 
         account.setUserName(doc.getString("email"));
         account.setWachtwoord(doc.getString("wachtwoord"));
-        account.setSalt(doc.getString("salt"));
         account.setRole(Role.valueOf(doc.getString("account_type")));
         Integer kl_id = doc.getInteger("klant_id");
         if (kl_id != null) {
@@ -92,7 +91,6 @@ public class AccountDAOmongoImpl implements AccountDAO {
 
         Document document = new Document("email", account.getUserName()).
                 append("wachtwoord", account.getWachtwoord()).
-                append("salt", account.getSalt()).
                 append("account_type", account.getRole().getDescription()).
                 append("klant_id", account.getKlantId());
 
@@ -108,7 +106,6 @@ public class AccountDAOmongoImpl implements AccountDAO {
         MongoCollection<Document> collection = db.getCollection("account");
 
         Document document = new Document("wachtwoord", account.getWachtwoord()).
-                append("salt", account.getSalt()).
                 append("account_type", account.getRole().getDescription()).
                 append("klant_id", account.getKlantId());
 

@@ -73,7 +73,7 @@ public class DbConnection {
             // Pool Connection in use
             if (ds == null) {
                 HikariConfig config = new HikariConfig();
-                config = new HikariConfig("src/main/resources/hikari.properties");
+                config = new HikariConfig("hikari.properties");
                 ds = new HikariDataSource(config);
             }
             try {
@@ -124,7 +124,7 @@ public class DbConnection {
     protected static void initializeSettingsXml() {
 
         try {
-            File DbConnFile = new File("src/main/resources/mysql.xml");
+            File DbConnFile = new File("mysql.xml");
             if (!DbConnFile.exists()) {
                 Slf4j.getLogger().error("Missing mysql.xml in : ", DbConnFile.getAbsolutePath());
             }
@@ -148,7 +148,7 @@ public class DbConnection {
         // JDBC Database Credentials (user / password) 
         Properties props = new Properties();
 
-        try (FileInputStream in = new FileInputStream("src/main/resources/mysql.properties")) {
+        try (FileInputStream in = new FileInputStream("mysql.properties")) {
             props.load(in);
             driver = props.getProperty("jdbc.driver");
             url = props.getProperty("jdbc.url");

@@ -10,27 +10,30 @@ import org.apache.commons.validator.routines.EmailValidator;
  */
 public class Validator {
 
-    public static boolean validLoginAccount(Account loginAccount) {
-        Account account = DAOFactory.getAccountDAO().readAccountByUserName(loginAccount.getUserName());
+    /**
+     *
+     * @param userName
+     * @param wachtwoord
+     * @return  loginAccount
+     */
+    public static Account validLogin(String userName, String wachtwoord) {
+        Account account = DAOFactory.getAccountDAO().readAccountByUserName(userName);
         if (account != null) {
             if (account.getWachtwoord() != null) {
                 // Volgende NIET meer gebruiken !!
                 //  if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {
                 //
-                byte[] expectedHash = Password.hash(account.getWachtwoord().toCharArray(), 
-                        account.getSalt().getBytes());
-                if (Password.isExpectedPassword(
-                        loginAccount.getWachtwoord().toCharArray(),
-                        account.getSalt().getBytes(), expectedHash)) {
-                    loginAccount.setRole(account.getRole());
-                    loginAccount.setKlantId(account.getKlantId());
-                    return true;
+                String salt = account.getWachtwoord().substring(0, 16);
+                String ww = account.getWachtwoord().substring(16);
+                if (Password.isExpectedPassword(wachtwoord.toCharArray(),
+                        salt.getBytes(), ww.getBytes())) {
+                    return account;
                 }
 
             }
         }
 
-        return false;
+        return null;
     }
 
     public static boolean validUsername(String gebruikersnaam) {
