@@ -14,25 +14,17 @@ public class Validator {
      *
      * @param userName
      * @param wachtwoord
-     * @return  loginAccount
+     * @return loginAccount
      */
     public static Account validLogin(String userName, String wachtwoord) {
         Account account = DAOFactory.getAccountDAO().readAccountByUserName(userName);
         if (account != null) {
             if (account.getWachtwoord() != null) {
-                // Volgende NIET meer gebruiken !!
-                //  if (loginAccount.getWachtwoord().equals(account.getWachtwoord())) {
-                //
-                String salt = account.getWachtwoord().substring(0, 16);
-                String ww = account.getWachtwoord().substring(16);
-                if (Password.isExpectedPassword(wachtwoord.toCharArray(),
-                        salt.getBytes(), ww.getBytes())) {
+                if (Password.isExpectedPassword(wachtwoord, account.getWachtwoord())) {
                     return account;
                 }
-
             }
         }
-
         return null;
     }
 

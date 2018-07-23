@@ -16,9 +16,12 @@ import nl.workshop1.view.SimpleMenuView;
  */
 public class MainController extends Controller {
 
+    // Wordt er wel/niet gevraagd om keuze Db (mysql/mongodb) en welke connectie (JDBC /Hikari
+    private static boolean developmentMode = false;
+
     // Default voor role is Klant, tenzij anders ingelogd
     private static Role role = Role.Klant;
-    
+
     private Menu hoofdMenu;
     private SimpleMenuView hoofdMenuView;
     private Klant inlogKlant = null;
@@ -32,35 +35,36 @@ public class MainController extends Controller {
     public void runController() {
 
         // Welke Db te gebruiken?
-        DbController dbCtrl = new DbController();
-        dbCtrl.runController();
-        switch (dbCtrl.getRequestedAction()) {
-            case "0":
-                // Afsluiten
-                return;
-            case "1":
-                DbConnection.setDbSelectie(DbConnection.DB_MYSQL);
-                break;
-            case "2":
-                DbConnection.setDbSelectie(DbConnection.DB_MONGODB);
-                break;
-        }
+        if (isDevelopmentMode()) {
+            DbController dbCtrl = new DbController();
+            dbCtrl.runController();
+            switch (dbCtrl.getRequestedAction()) {
+                case "0":
+                    // Afsluiten
+                    return;
+                case "1":
+                    DbConnection.setDbSelectie(DbConnection.DB_MYSQL);
+                    break;
+                case "2":
+                    DbConnection.setDbSelectie(DbConnection.DB_MONGODB);
+                    break;
+            }
 
-        // Indien MySQL gekozen, dan is de default HikariCP.
-        // Vraag of men JDBC wil gebruiken.
-        if (DbConnection.getDbSelectie().equals(DbConnection.DB_MYSQL)) {
-            ConnectionPoolController cpCtrl = new ConnectionPoolController();
-            cpCtrl.runController();
-            if (cpCtrl.getRequestedAction().equals("J")) {
-                // Er is gekozen om JDBC te gebruiken
-                DbConnection.setHikariCPenabled(false);
+            // Indien MySQL gekozen, dan is de default HikariCP.
+            // Vraag of men JDBC wil gebruiken.
+            if (DbConnection.getDbSelectie().equals(DbConnection.DB_MYSQL)) {
+                ConnectionPoolController cpCtrl = new ConnectionPoolController();
+                cpCtrl.runController();
+                if (cpCtrl.getRequestedAction().equals("J")) {
+                    // Er is gekozen om JDBC te gebruiken
+                    DbConnection.setHikariCPenabled(false);
+                }
             }
         }
-
+        
         // TODO: Alleen tijdens ontwikkeling
-        updateAllAccounts();
-        
-        
+//        updateAllAccounts();
+
         // Start the login procedure
         LoginController loginCtrl = new LoginController();
         loginCtrl.runController();
@@ -159,40 +163,36 @@ public class MainController extends Controller {
         Account newAccount = new Account();
 
         newAccount.setUserName("stephan@borst.nl");
-        newAccount.setWachtwoord("stephan");
         newAccount.setRole(Role.Medewerker);
         newAccount.setKlantId(0);
-        updateAccount(newAccount);
+        updateAccount("stephan", newAccount);
 
         newAccount.setUserName("klant1@klant.nl");
-        newAccount.setWachtwoord("klant1");
         newAccount.setRole(Role.Klant);
         newAccount.setKlantId(1);
-        updateAccount(newAccount);
-        
+        updateAccount("klant1", newAccount);
+
         newAccount.setUserName("boer@piet.nl");
-        newAccount.setWachtwoord("piet");
         newAccount.setRole(Role.Admin);
         newAccount.setKlantId(0);
-        updateAccount(newAccount);
-        
+        updateAccount("piet", newAccount);
+
     }
 
-    protected void updateAccount(Account account) {
+    protected void updateAccount(String ww, Account account) {
         // Alleen tijdens ontwikkeling !!!
-        byte[] salt = Password.getNextSalt();
-        byte[] passwdHash = Password.hash(account.getWachtwoord().toCharArray(), salt);
-
         Account newAccount = new Account();
-        newAccount.setWachtwoord(new String(salt) + new String(passwdHash));
+        newAccount.setWachtwoord(Password.hashedAndSalted(ww));
         newAccount.setUserName(account.getUserName());
         newAccount.setRole(account.getRole());
         newAccount.setKlantId(account.getKlantId());
         DAOFactory.getAccountDAO().updateAccount(newAccount);
+    }
 
-//        System.out.println( "User    = "+ newAccount.getUserName());
-//        System.out.println( "Salt    = "+ new String(salt));
-//        System.out.println( "Hash    = "+ newAccount.getWachtwoord());
-//        System.out.println();
+    /**
+     * @return the isDevelopment
+     */
+    public static boolean isDevelopmentMode() {
+        return developmentMode;
     }
 }

@@ -1,8 +1,10 @@
 package nl.workshop1.utility;
 
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
@@ -65,24 +67,63 @@ public class Password {
      * @return true if the given password and salt match the hashed value, false
      * otherwise
      */
-    public static boolean isExpectedPassword(char[] password, byte[] salt, byte[] expectedHash) {
+    public static boolean isExpectedPassword(String password, String expectedPwd) {
 
-        // Don't use following. Its is vulnerable to timing attacks!!
-//        if (pwdHash.length != expectedHash.length) {
-//            return false;
-//        }
-//        for (int i = 0; i < pwdHash.length; i++) {
-//            if (pwdHash[i] != expectedHash[i]) {
-//                return false;
-//            }
-//        }
-        byte[] pwdHash = hash(password, salt);
-        int diff = pwdHash.length ^ expectedHash.length;
-        for (int i = 0; i < pwdHash.length && i < expectedHash.length; i++) {
-            diff |= pwdHash[i] ^ expectedHash[i];
+        // Compose the current hashed and salted password
+        byte[] salt = Arrays.copyOfRange(bytesFromHex(expectedPwd), 0, 16);
+        byte[] currentHash = hash(password.toCharArray(), salt);
+        String currentPwd = hexFromBytes(add2ByteArrays(salt, currentHash));
+        
+        // Compare current and expected for equality
+        boolean retValue = true;
+        if (currentPwd.length() != expectedPwd.length()) {
+            retValue = false;
         }
-        return diff == 0;
+        for (int i = 0; i < currentPwd.length() && i < expectedPwd.length(); i++) {
+            if (currentPwd.charAt(i) != expectedPwd.charAt(i)) {
+                retValue = false;
+            }
+        }
+        return retValue;
 
     }
 
+    private static byte[] add2ByteArrays(byte[] one, byte[] two) {
+        byte[] combined = new byte[one.length + two.length];
+        for (int i = 0; i < combined.length; ++i) {
+            combined[i] = i < one.length ? one[i] : two[i - one.length];
+        }
+        return combined;
+    }
+
+    /**
+     * Make een hashed/salted wachtwoord van een user wachtwoord
+     *
+     * @param wachtwoord
+     * @return hashed and salted wachtwoord
+     */
+    public static String hashedAndSalted(String wachtwoord) {
+        byte[] salt = getNextSalt();
+        byte[] pwdHash = hash(wachtwoord.toCharArray(), salt);
+        return hexFromBytes(add2ByteArrays(salt, pwdHash));
+    }
+
+    private static String hexFromBytes(byte[] array) {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if (paddingLength > 0) {
+            return String.format("%0" + paddingLength + "d", 0) + hex;
+        } else {
+            return hex;
+        }
+    }
+
+    private static byte[] bytesFromHex(String hex) {
+        byte[] bytes = new byte[hex.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        }
+        return bytes;
+    }
 }

@@ -47,7 +47,8 @@ public class AccountView extends View {
         if (account.getUserName().isEmpty()) {
             // Nu weet je zeker dat dit de eerste keer is
             account.setUserName(getInputUsername(/*allowEmptyInput=*/false));
-            account.setWachtwoord(getInputWachtwoord());
+            String wachtwoord = getInputWachtwoord();
+            account.setWachtwoord(Password.hashedAndSalted(wachtwoord));
             account.setRole(getInputRole());
 
             if (account.getRole() == Role.Klant) {
@@ -68,9 +69,7 @@ public class AccountView extends View {
                     break;
                 case "2":
                     String wachtwoord = getInputWachtwoord();
-                    byte[] salt = Password.getNextSalt();
-                    byte[] hashed = Password.hash(wachtwoord.toCharArray(),salt);
-                    account.setWachtwoord(new String(salt) + new String(hashed));
+                    account.setWachtwoord(Password.hashedAndSalted(wachtwoord));
                     break;
                 case "3":
                     account.setRole(getInputRole());

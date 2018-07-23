@@ -1,5 +1,6 @@
 package nl.workshop1.view;
 
+import nl.workshop1.controller.MainController;
 import nl.workshop1.model.Account;
 import nl.workshop1.utility.Validator;
 
@@ -26,20 +27,21 @@ public class LoginView extends View {
         drawMenu();
 
         while (true) {
-            // TODO: Tijdens ontwikkeling, gebruik een default en auto login
-            // Test met verschillende soorten (Roles) accounts
-            userName = "boer@piet.nl";
-            wachtwoord = "piet";
-//            userName = "stephan@borst.nl";
-//             wachtwoord = "stephan";
+            // TODO: autologin tijdens ontwikkelfase applicatie
+            if (MainController.isDevelopmentMode()) {
+//                userName = "boer@piet.nl";
+//                wachtwoord = "piet";
+            userName = "stephan@borst.nl";
+             wachtwoord = "stephan";
 //             userName = "klant1@klant.nl";
 //             wachtwoord = "klant1";
-            loginAccount = Validator.validLogin(userName, wachtwoord);
-            if (loginAccount != null) {
-                OutputText.showMessage("Autologin enabled for : " + loginAccount.getUserName());
-                return "1";
+                loginAccount = Validator.validLogin(userName, wachtwoord);
+                if (loginAccount != null) {
+                    OutputText.showMessage("Autologin enabled for : " + loginAccount.getUserName());
+                    return "1";
+                }
             }
-
+            
             // Hier start de (productie) procedure !!
             OutputText.showMessage("Een lege gebruikersnaam zal de applicatie afsluiten.");
             userName = getInputUsername(/*allowEmptyInput=*/true);

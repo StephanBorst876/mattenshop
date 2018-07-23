@@ -54,13 +54,6 @@ public class AccountDAOImpl implements AccountDAO {
                     account.setRole(Role.valueOf(resultSet.getString("account_type")));
                     account.setKlantId(resultSet.getInt("klant_id"));
                     accountList.add(account);
-
-//                    System.out.println("User    = " + account.getUserName());
-//                    System.out.println("Salt    = " + account.getWachtwoord().substring(0,16));
-//                    System.out.println("Hash    = " + account.getWachtwoord());
-//                    
-//                    System.out.println();
-
                 }
             }
 

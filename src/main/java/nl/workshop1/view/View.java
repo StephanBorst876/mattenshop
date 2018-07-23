@@ -14,7 +14,7 @@ import nl.workshop1.model.Klant;
  */
 public abstract class View extends UserInput {
 
-    private static final int NUMBER_RECORDS_TO_DISPLAY = 26;
+    private static final int NUMBER_RECORDS_TO_DISPLAY = 10;
 
     private Menu menu;
     protected ArrayList<Character> validOptions;

@@ -1,4 +1,4 @@
 email, wachtwoord, account_type, klant_id
-boer@piet.nl, , Admin
-stephan@borst.nl, , Medewerker
-klant1@klant.nl, , [,Klant, 1
+boer@piet.nl, bbce59f71108498cbaa06dbc43dc2607db42f3922ff7b971cf40d8c7292bcd3b03ba8b872a324b4e98cd7d1f4cfc541f, Admin
+stephan@borst.nl, df05eac5237c6d42ef730f2e33d8f27449d0411b872ab3fefa874104f05bacf0d9eef8345747e2c16754de318b30a0d3, Medewerker
+klant1@klant.nl, fb885ac13f7d80f57e29b88fcfe5d3c31265b69bb0bb278c051aaace540c59c50866a14c2ac42ceed06f0d9970363617, [,Klant, 1
